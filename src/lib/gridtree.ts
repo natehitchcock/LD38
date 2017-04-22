@@ -1,5 +1,4 @@
 import { JoshuaTree } from './joshuatree';
-import net from './network';
 import * as uuid from 'uuid';
 
 interface TreeUpdate {
@@ -12,12 +11,13 @@ interface Remote {
     send(msgs: any);
 }
 
-class GridTree extends JoshuaTree {
+export default class GridTree extends JoshuaTree {
     id: string;
     messages: TreeUpdate[];
     parent: GridTree;
+    net: any;
 
-    constructor(remote?: Remote) {
+    constructor() {
         super();
 
         if(!this.parent) {
@@ -25,10 +25,11 @@ class GridTree extends JoshuaTree {
         } 
     }
 
-    startNetwork() {
+    startNetwork(network: any) {
+        this.net = network;
         this.id = uuid.v4();
-        net.addHandler(this.id, (msg) => {
-            if(msg.type === net.MessageType.TREE) {
+        this.net.addHandler(this.id, (msg) => {
+            if(msg.type === this.net.MessageType.TREE) {
                 msg.payload.forEach((msg: TreeUpdate) => {
                     this.onMessage(msg);
                 })
@@ -37,7 +38,7 @@ class GridTree extends JoshuaTree {
     }
 
     stopNetwork() {
-        net.removeHandler(this.id);
+        this.net.removeHandler(this.id);
     }
 
     onMessage(msg: TreeUpdate) {
@@ -85,12 +86,12 @@ class GridTree extends JoshuaTree {
     }
 
     Sync() {
-        if(!this.parent) {
-            net.send({
-                type: net.MessageType.TREE,
+        if(!this.parent && this.net) {
+            this.net.send({
+                type: this.net.MessageType.TREE,
                 payload: this.messages
             });
-            
+
             this.messages = [];
         }
     }
