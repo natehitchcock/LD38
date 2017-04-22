@@ -13,6 +13,9 @@ attack_radius = [10, 100000000, 100] # x, y, z = grid squares across, grid squar
 can_move = false
 invulnerable_during = true
 terrain_destructor = true
+particle_effect = ""
+sfx_on_use = true #with/without text to voice
+sfx = "Serious Punch"
 
 #Timing
 [timing] 
