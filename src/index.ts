@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import FlyCharacter from './FlyCharacter'
+import FlyCharacter from './FlyCharacter';
+import JTreeEntity from './JTreeEntity';
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -10,14 +11,20 @@ document.body.appendChild( renderer.domElement );
 
 let character = new FlyCharacter(camera);
 
-var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var cube = new THREE.Mesh( geometry, material );
-scene.add(cube);
-
 let clock = new THREE.Clock();
 
 camera.position.z = 5;
+var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+
+let jtree = new JTreeEntity();
+jtree.generateJTree();
+jtree.spawnCubes(pos =>{    
+    var cube = new THREE.Mesh( geometry, material );
+    cube.position.copy(new THREE.Vector3(pos.x, pos.y, pos.z));
+    scene.add( cube );
+    //console.log('hit ' + pos);
+});
 
 let direction = 1;
 var render = function () {
