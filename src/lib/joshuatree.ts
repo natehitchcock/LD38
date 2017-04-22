@@ -63,15 +63,18 @@ export class JoshuaTree extends Uint64 {
     parent: JoshuaTree;
     key: number;
 
-    constructor(data?: number[]) {
-        super(data);
+    constructor() {
+        super();
         this.children = {};
     }
 
-    FromJSON(json: any): JoshuaTree {
+    FromJSON(json: any, treeClass: any = JoshuaTree): JoshuaTree {
         this.parent = json.parent;
         Object.keys(json.children).forEach(key => {
-            this.children[key] = new JoshuaTree().FromJSON(json['children'][key]);
+            let child = json['children'][key];
+            const numKey = parseInt(key, 10);
+            child = child.children ? new treeClass().FromJSON(child) : child;
+            this.Add(numKey, child);
         });
 
         return this;

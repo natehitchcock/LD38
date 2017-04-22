@@ -16,13 +16,18 @@ export default class GridTree extends JoshuaTree {
     messages: TreeUpdate[];
     parent: GridTree;
     net: any;
+    noSync: boolean;
 
     constructor() {
         super();
 
         if(!this.parent) {
             this.messages = [];
-        } 
+        }
+    }
+    
+    get c() {
+        return this.children;
     }
 
     startNetwork(network: any) {
@@ -42,23 +47,27 @@ export default class GridTree extends JoshuaTree {
     }
 
     onMessage(msg: TreeUpdate) {
-        const loc = msg.location.pop();
+        const loc = msg.location.shift();
         if(msg.location.length > 0) {
             this.children[loc].onMessage(msg);
         } 
         else {
             if(msg.add) {
-                this.Add(loc, msg.payload);
+                const child = msg.payload.children ? new GridTree().FromJSON(msg.payload, GridTree) : msg.payload;
+                super.Add(loc, child);
             } else {
-                this.Remove(loc);
+                super.Remove(loc);
             }
         }
     }
 
     AddMessage(msg: TreeUpdate) {
-        msg.location.unshift(this.key);
+        if(this.noSync) {
+            return;
+        }
 
         if(this.parent) {
+            msg.location.unshift(this.key);
             this.parent.AddMessage(msg);
         }
         else {
@@ -69,7 +78,7 @@ export default class GridTree extends JoshuaTree {
     Remove(key: number): boolean {
         this.AddMessage({
             add: false,
-            location: []
+            location: [key]
         });
 
         return super.Remove(key);
@@ -78,11 +87,15 @@ export default class GridTree extends JoshuaTree {
     Add(key: number, child: JoshuaTree | any, force?: boolean): boolean {
         this.AddMessage({
             add: true,
-            location: [],
+            location: [key],
             payload: child
         });
 
         return super.Add(key, child, force);
+    }
+
+    FromJSON(json: any, treeClass: any = GridTree): JoshuaTree {
+        return super.FromJSON(json, treeClass);
     }
 
     Sync() {
