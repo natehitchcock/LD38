@@ -1,5 +1,6 @@
 module.exports = {
     entry: "./src/index.ts",
+    
     output: {
         filename: "bundle.js",
         path: __dirname + "/dist"
@@ -21,8 +22,5 @@ module.exports = {
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
-    },
-    externals: {
-        'playcanvas': 'pc'
     }
 };

@@ -61,8 +61,9 @@ export class Uint64 {
 export class JoshuaTree extends Uint64 {
     children: {[key: string]: JoshuaTree | any};
     parent: JoshuaTree;
+    key: number;
 
-    constructor(data?: number[], payload?: any) {
+    constructor(data?: number[]) {
         super(data);
         this.children = {};
     }
@@ -80,7 +81,10 @@ export class JoshuaTree extends Uint64 {
         if(this.children[key]) {
             const child = this.children[key];
             this.Copy(this.Xor(new Uint64().Set(key)));
-            delete child.parent;
+            if(child instanceof JoshuaTree) {
+                delete child.parent;
+                delete child.key;
+            }
             delete this.children[key];
             return true;
         }
@@ -92,10 +96,13 @@ export class JoshuaTree extends Uint64 {
         return JSON.stringify(this);
     }
 
-    Add(key: number, child: JoshuaTree, force?: boolean): boolean {
+    Add(key: number, child: JoshuaTree | any, force?: boolean): boolean {
         if(!this.children[key]) {
             this.children[key] = child;
-            child.parent = this;
+            if(child instanceof JoshuaTree) {
+                child.parent = this;
+                child.key = key;
+            }
             this.Copy(this.Or(new Uint64().Set(key)));
             return true;
         } else if(force) {
@@ -106,7 +113,7 @@ export class JoshuaTree extends Uint64 {
 
         return false;
     }
-    
+
     ForEach(fn: (node: JoshuaTree, key?: string) => void, key?: string) {
         fn(this, key);
         

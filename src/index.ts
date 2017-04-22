@@ -1,45 +1,32 @@
-/// <reference path='types/playcanvas.d.ts'/>
+import * as THREE from 'three';
+import {keys} from './lib/input';
 
-// create a PlayCanvas application
-var canvas = document.getElementById('application');
-var app = new pc.Application(canvas, { });
-app.start();
+const ws = new WebSocket(`ws://${location.host}/ws`);
 
-// fill the available space at full resolution
-app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW);
-app.setCanvasResolution(pc.RESOLUTION_AUTO);
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
-// ensure canvas is resized when window changes size
-window.addEventListener('resize', function() {
-    app.resizeCanvas();
-});
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
 
-// create box entity
-var cube = new pc.Entity('cube');
-cube.addComponent('model', {
-    type: 'box'
-});
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+var cube = new THREE.Mesh( geometry, material );
+scene.add(cube);
 
-// create camera entity
-var camera = new pc.Entity('camera');
-camera.addComponent('camera', {
-    clearColor: new pc.Color(0.1, 0.1, 0.1)
-});
+camera.position.z = 5;
 
-// create directional light entity
-var light = new pc.Entity('light');
-light.addComponent('light');
+let direction = 1;
+var render = function () {
+    requestAnimationFrame( render );
 
-// add to hierarchy
-app.root.addChild(cube);
-app.root.addChild(camera);
-app.root.addChild(light);
+    direction = keys.a ? -1 : keys.d ? 1 : direction;
+    cube.rotation.x += 0.1 * direction;
+    cube.rotation.y += 0.1 * direction;
 
-// set up initial positions and orientations
-camera.setPosition(0, 0, 3);
-light.setEulerAngles(45, 0, 0);
 
-// register a global update event
-app.on('update', function (deltaTime: number) {
-    cube.rotate(10 * deltaTime, 20 * deltaTime, 30 * deltaTime);
-});
+    renderer.render(scene, camera);
+};
+
+render();
