@@ -25,6 +25,7 @@
   },
   "scripts": {
     "watch": "webpack --watch",
+    "compile": "webpack --optimize-minimize",
     "serve": "webpack-dev-server --content-base dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

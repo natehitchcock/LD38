@@ -19,15 +19,10 @@ document.addEventListener('mouseup', e => {
     mouse.left = false;
 });
 
-const keys = {};
-const mouse = {
+export const keys: {[key: string]: boolean} = {};
+export const mouse = {
     x: 0,
     y: 0,
     left: false,
     right: false
-};
-
-export default {
-    keys,
-    mouse
 };

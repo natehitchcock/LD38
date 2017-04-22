@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import keys from './lib/input';
+import {keys} from './lib/input';
 
 const ws = new WebSocket(`ws://${location.host}/ws`);
 
@@ -17,11 +17,14 @@ scene.add(cube);
 
 camera.position.z = 5;
 
+let direction = 1;
 var render = function () {
     requestAnimationFrame( render );
 
-    cube.rotation.x += 0.1;
-    cube.rotation.y += 0.1;
+    direction = keys.a ? -1 : keys.d ? 1 : direction;
+    cube.rotation.x += 0.1 * direction;
+    cube.rotation.y += 0.1 * direction;
+
 
     renderer.render(scene, camera);
 };
