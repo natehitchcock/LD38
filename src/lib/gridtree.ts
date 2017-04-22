@@ -90,6 +90,7 @@ class GridTree extends JoshuaTree {
                 type: net.MessageType.TREE,
                 payload: this.messages
             });
+            
             this.messages = [];
         }
     }
