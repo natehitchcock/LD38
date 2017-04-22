@@ -43798,7 +43798,6 @@ function CanvasRenderer() {
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __webpack_require__(0);
 var input_1 = __webpack_require__(2);
-var ws = new WebSocket("ws://" + location.host + "/ws");
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 var renderer = new THREE.WebGLRenderer();

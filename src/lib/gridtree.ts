@@ -1,30 +1,46 @@
 import { JoshuaTree } from './joshuatree';
+import net from './network';
+import * as uuid from 'uuid';
 
-interface Message {
+interface TreeUpdate {
     add: boolean;
     location: number[];
     payload?: any;
 }
 
 interface Remote {
-    send(msgs: Message[]);
+    send(msgs: any);
 }
 
 class GridTree extends JoshuaTree {
-    remote: Remote;
-    messages: Message[];
+    id: string;
+    messages: TreeUpdate[];
     parent: GridTree;
 
     constructor(remote?: Remote) {
         super();
 
         if(!this.parent) {
-            this.remote = remote;
             this.messages = [];
         } 
     }
 
-    onMessage(msg: Message) {
+    startNetwork() {
+        this.id = uuid.v4();
+        net.addHandler(this.id, (msg) => {
+            if(msg.type === net.MessageType.TREE) {
+                msg.payload.forEach((msg: TreeUpdate) => {
+                    this.onMessage(msg);
+                })
+            }
+        });
+    }
+
+    stopNetwork() {
+        net.removeHandler(this.id);
+    }
+
+    onMessage(msg: TreeUpdate) {
         const loc = msg.location.pop();
         if(msg.location.length > 0) {
             this.children[loc].onMessage(msg);
@@ -38,7 +54,7 @@ class GridTree extends JoshuaTree {
         }
     }
 
-    AddMessage(msg: Message) {
+    AddMessage(msg: TreeUpdate) {
         msg.location.unshift(this.key);
 
         if(this.parent) {
@@ -70,7 +86,10 @@ class GridTree extends JoshuaTree {
 
     Sync() {
         if(!this.parent) {
-            this.remote.send(this.messages);
+            net.send({
+                type: net.MessageType.TREE,
+                payload: this.messages
+            });
             this.messages = [];
         }
     }
