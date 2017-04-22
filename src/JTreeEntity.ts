@@ -1,3 +1,4 @@
+/*
 import {Uint64, JoshuaTree} from './lib/joshuatree';
 
 let maxNum: Uint64 = new Uint64([4294967295, 4294967295]);
@@ -133,3 +134,4 @@ export default class JTreeEntity{
 
     }
 }
+*/
