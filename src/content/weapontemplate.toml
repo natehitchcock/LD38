@@ -1,21 +1,26 @@
-title = 'Weapon Template'
+type = 'Melee/Ranged'
 
 #Weapon Details
 [weapon]
 name = 'One Punch Fist'
-flavor_text = "One Serious Punch"
+flavor_text = 'One Serious Punch'
 
 #Technical Specifications
-[data]
+[attack_info]
 attach_point = 'right hand'
 ammo = 1
-attack_radius = [10, 100000000, 100] # x, y, z = grid squares across, grid squares forward, grid squares up
+attack_template = 'cylinder'
+attack_radius = [100, 10] # height and width, the formula is V = (pi)(r)^2(h) 
 can_move = false
 invulnerable_during = true
 terrain_destructor = true
-particle_effect = ""
+projectile_dmg = 100
+collision_dmg = 9001
+
+[effects]
+particle_effect = ''
 sfx_on_use = true #with/without text to voice
-sfx = "Serious Punch"
+sfx = 'Serious Punch'
 
 #Timing
 [timing] 
