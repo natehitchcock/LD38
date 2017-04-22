@@ -43797,6 +43797,7 @@ function CanvasRenderer() {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __webpack_require__(0);
+var input_1 = __webpack_require__(2);
 var ws = new WebSocket("ws://" + location.host + "/ws");
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -43808,13 +43809,47 @@ var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 camera.position.z = 5;
+var direction = 1;
 var render = function () {
     requestAnimationFrame(render);
-    cube.rotation.x += 0.1;
-    cube.rotation.y += 0.1;
+    direction = input_1.keys.a ? -1 : input_1.keys.d ? 1 : direction;
+    cube.rotation.x += 0.1 * direction;
+    cube.rotation.y += 0.1 * direction;
     renderer.render(scene, camera);
 };
 render();
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+document.addEventListener('keyup', function (e) {
+    exports.keys[e.key] = true;
+});
+document.addEventListener('keydown', function (e) {
+    exports.keys[e.key] = false;
+});
+document.addEventListener('mousemove', function (e) {
+    exports.mouse.x = e.clientX;
+    exports.mouse.y = e.clientY;
+});
+document.addEventListener('mousedown', function (e) {
+    exports.mouse.left = true;
+});
+document.addEventListener('mouseup', function (e) {
+    exports.mouse.left = false;
+});
+exports.keys = {};
+exports.mouse = {
+    x: 0,
+    y: 0,
+    left: false,
+    right: false
+};
 
 
 /***/ })
