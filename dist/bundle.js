@@ -43797,23 +43797,23 @@ function CanvasRenderer() {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __webpack_require__(0);
-var input_1 = __webpack_require__(2);
+var FlyCharacter_1 = __webpack_require__(3);
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+var character = new FlyCharacter_1.default(camera);
 var geometry = new THREE.BoxGeometry(1, 1, 1);
 var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
+var clock = new THREE.Clock();
 camera.position.z = 5;
 var direction = 1;
 var render = function () {
     requestAnimationFrame(render);
-    direction = input_1.keys.a ? -1 : input_1.keys.d ? 1 : direction;
-    cube.rotation.x += 0.1 * direction;
-    cube.rotation.y += 0.1 * direction;
+    character.update(clock);
     renderer.render(scene, camera);
 };
 render();
@@ -43827,10 +43827,12 @@ render();
 
 Object.defineProperty(exports, "__esModule", { value: true });
 document.addEventListener('keyup', function (e) {
-    exports.keys[e.key] = true;
+    exports.keys[e.keyCode] = false;
+    exports.keys[e.key] = false;
 });
 document.addEventListener('keydown', function (e) {
-    exports.keys[e.key] = false;
+    exports.keys[e.keyCode] = true;
+    exports.keys[e.key] = true;
 });
 document.addEventListener('mousemove', function (e) {
     exports.mouse.x = e.clientX;
@@ -43849,6 +43851,92 @@ exports.mouse = {
     left: false,
     right: false
 };
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var THREE = __webpack_require__(0);
+var input_1 = __webpack_require__(2);
+var FlyCharacter = (function () {
+    function FlyCharacter(cam) {
+        this.speed = 3;
+        this.rotationSpeedX = 4;
+        this.rotationSpeedY = 4;
+        this.cameraRef = cam;
+        this.forward = new THREE.Vector3(0, 0, -1);
+        this.right = new THREE.Vector3(1, 0, 0);
+        this.up = new THREE.Vector3(0, 1, 0);
+    }
+    FlyCharacter.prototype._updateMovement = function (dt) {
+        if (input_1.keys.a) {
+            var rightMove = new THREE.Vector3().copy(this.right);
+            rightMove.multiplyScalar(-this.speed * dt);
+            console.log(rightMove);
+            this.cameraRef.position.addVectors(this.cameraRef.position, rightMove);
+        }
+        if (input_1.keys.d) {
+            var rightMove = new THREE.Vector3().copy(this.right);
+            rightMove.multiplyScalar(this.speed * dt);
+            console.log(rightMove);
+            this.cameraRef.position.addVectors(this.cameraRef.position, rightMove);
+        }
+        if (input_1.keys.w) {
+            var forwardMove = new THREE.Vector3().copy(this.forward);
+            forwardMove.multiplyScalar(this.speed * dt);
+            console.log(forwardMove);
+            this.cameraRef.position.addVectors(this.cameraRef.position, forwardMove);
+        }
+        if (input_1.keys.s) {
+            var forwardMove = new THREE.Vector3().copy(this.forward);
+            forwardMove.multiplyScalar(-this.speed * dt);
+            console.log(forwardMove);
+            this.cameraRef.position.addVectors(this.cameraRef.position, forwardMove);
+        }
+        if (input_1.keys.e) {
+            var upMove = new THREE.Vector3().copy(this.up);
+            upMove.multiplyScalar(this.speed * dt);
+            console.log(upMove);
+            this.cameraRef.position.addVectors(this.cameraRef.position, upMove);
+        }
+        if (input_1.keys.q) {
+            var upMove = new THREE.Vector3().copy(this.up);
+            upMove.multiplyScalar(-this.speed * dt);
+            console.log(upMove);
+            this.cameraRef.position.addVectors(this.cameraRef.position, upMove);
+        }
+    };
+    FlyCharacter.prototype._updateRotation = function (dt) {
+        var left = 37;
+        var up = 38;
+        var right = 39;
+        var down = 40;
+        if (input_1.keys[up]) {
+            //this.cameraRef.rotateX(this.rotationSpeedX * dt);
+        }
+        if (input_1.keys[down]) {
+            //this.cameraRef.rotateX(-this.rotationSpeedX * dt);
+        }
+        if (input_1.keys[left]) {
+            this.cameraRef.rotateY(this.rotationSpeedY * dt);
+        }
+        if (input_1.keys[right]) {
+            this.cameraRef.rotateY(-this.rotationSpeedY * dt);
+        }
+        // [TODO] Update character orientation vectors here
+    };
+    FlyCharacter.prototype.update = function (clock) {
+        var dt = clock.getDelta();
+        this._updateMovement(dt);
+        this._updateRotation(dt);
+    };
+    return FlyCharacter;
+}());
+exports.default = FlyCharacter;
 
 
 /***/ })
