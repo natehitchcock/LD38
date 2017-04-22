@@ -18,9 +18,10 @@ invulnerable_during = false
 terrain_destructor = true
 projectile_dmg = 50
 collision_dmg = 0
+velocity = 2 #meters per second? 
 
 [effects]
-particle_effect = 'gravity_Lines'
+particle_effect = 'gravity_Line'
 sfx_on_use = true #with/without text to voice
 sfx = 'Beyooooooooooo' #use gantz:0 soundbyte
 

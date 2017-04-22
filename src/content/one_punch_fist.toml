@@ -18,6 +18,7 @@ invulnerable_during = true
 terrain_destructor = true
 projectile_dmg = 100
 collision_dmg = 9001
+velocity = 2 #meters per second? 
 
 [effects]
 particle_effect = ''

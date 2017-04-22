@@ -11,13 +11,14 @@ attach_point = 'left hand'
 ammo = 1
 attack_template = 'square'
 projectile_spawn_location = 1 #grids in front of you
-attack_radius = [5, 5, 5] # height and width 
+attack_radius = [5, 5, 5] # height and width
 can_move = true
 can_charge = true
 invulnerable_during = false
 terrain_destructor = true
 projectile_dmg = 20
 collision_dmg = 0
+velocity = 2 #meters per second? 
 
 [effects]
 particle_effect = 'explosion'

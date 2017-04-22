@@ -18,6 +18,7 @@ invulnerable_during = false
 terrain_destructor = true
 projectile_dmg = 500
 collision_dmg = 500
+velocity = 2 #meters per second? 
 
 [effects]
 particle_effect = 'spirit_Bomb'
