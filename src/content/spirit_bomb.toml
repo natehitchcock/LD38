@@ -13,6 +13,7 @@ attack_template = 'sphere'
 projectile_spawn_location = 2 #grids in front of you
 attack_radius = [100, 10, 50] # height and width 
 can_move = false
+can_charge = false
 invulnerable_during = false
 terrain_destructor = true
 projectile_dmg = 500
