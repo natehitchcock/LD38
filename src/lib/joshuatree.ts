@@ -59,19 +59,16 @@ export class Uint64 {
 }
 
 export class JoshuaTree extends Uint64 {
-    children: {[key: string]: JoshuaTree};
+    children: {[key: string]: JoshuaTree | any};
     parent: JoshuaTree;
-    payload: any;
 
     constructor(data?: number[], payload?: any) {
         super(data);
         this.children = {};
-        this.payload = payload;
     }
 
     FromJSON(json: any): JoshuaTree {
         this.parent = json.parent;
-        this.payload = json.payload;
         Object.keys(json.children).forEach(key => {
             this.children[key] = new JoshuaTree().FromJSON(json['children'][key]);
         });
@@ -114,7 +111,10 @@ export class JoshuaTree extends Uint64 {
         fn(this, key);
         
         Object.keys(this.children).forEach((childKey: string) => {
-            this.children[childKey].ForEach(fn, childKey);
+            const child = this.children[childKey];
+            if(child instanceof JoshuaTree) {
+                child.ForEach(fn, childKey);
+            }    
         });
     }
 }
