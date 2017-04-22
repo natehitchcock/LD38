@@ -9,9 +9,11 @@
     "rtc-quickconnect": "^5.8.0",
     "socket.io": "^1.7.3",
     "three": "^0.85.0",
+    "uuid": "^3.0.1",
     "ws": "^2.3.1"
   },
   "devDependencies": {
+    "@types/core-js": "^0.9.41",
     "@types/express": "^4.0.35",
     "@types/node": "^7.0.13",
     "@types/three": "^0.84.6",
