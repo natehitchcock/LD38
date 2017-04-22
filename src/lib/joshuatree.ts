@@ -106,7 +106,7 @@ export class JoshuaTree extends Uint64 {
 
         return false;
     }
-
+    
     ForEach(fn: (node: JoshuaTree, key?: string) => void, key?: string) {
         fn(this, key);
         
