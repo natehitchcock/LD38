@@ -1,23 +1,23 @@
 declare module pc {
-    export module fw {
-        export class Application {
-            constructor(canvas: HTMLElement, options: any);
-            start: () => void;
-            setCanvasFillMode: (mode: any) => void;
-            setCanvasResolution: (mode: any) => void;
+    
+    export class Application {
+        constructor(canvas: HTMLElement, options: any);
+        start: () => void;
+        setCanvasFillMode: (mode: any) => void;
+        setCanvasResolution: (mode: any) => void;
+        resizeCanvas: (width?: number, height?: number) => void;
+        on: (event: string, any: any) => void;
 
-            on: (event: string, any: any) => void;
-
-            root: Entity;
-            loader: pc.resources.ResourceLoader;
-            assets: pc.asset.AssetRegistry;
-            systems: ComponentSystemRegistry;
-            scene: Scene;
-            touch: pc.input.TouchDevice;
-            keyboard: pc.input.Keyboard;
-            mouse: pc.input.Mouse;
-        }
+        root: Entity;
+        loader: pc.resources.ResourceLoader;
+        assets: pc.asset.AssetRegistry;
+        systems: ComponentSystemRegistry;
+        scene: Scene;
+        touch: pc.input.TouchDevice;
+        keyboard: pc.input.Keyboard;
+        mouse: pc.input.Mouse;
     }
+    
 
     export class input {
         static KEY_SPACE: number;
@@ -40,7 +40,7 @@ declare module pc {
     }
 
     export class script {
-        static create: (name: string, script: (app: fw.Application) => any) => void;
+        static create: (name: string, script: (app: Application) => any) => void;
     }
 
     export module resources {
@@ -60,10 +60,11 @@ declare module pc {
     }
 
     export class Entity {
-        addComponent: (type: string, options: any) => void;
+        addComponent: (type: string, options?: any) => void;
         removeComponent: (type: string) => void;
         addChild: (e: Entity) => void;
         getChildren(): Entity[];
+        constructor(name?: string);
 
         getLocalScale: () => pc.Vec3;
         getPosition: () => pc.Vec3;
@@ -91,6 +92,7 @@ declare module pc {
         rotateLocal: {
             (x: number, y: number, z: number): void;
         }
+        rotate: (ex: number, ey: number, ez: number) => void;
 
         getName: () => string;
         setName: (name: string) => void;
