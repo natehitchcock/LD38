@@ -15,8 +15,8 @@ attack_radius = [5, 10, 50] # height and width
 can_move = true
 invulnerable_during = false
 terrain_destructor = true
-projectile_dmg = 100
-collision_dmg = 9001
+projectile_dmg = 50
+collision_dmg = 0
 
 [effects]
 particle_effect = ''
