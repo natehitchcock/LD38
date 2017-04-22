@@ -25,7 +25,7 @@ class Position {
     }
 }
 
-let maxDepth = 3;
+let maxDepth = 2;
 
 export default class JTreeEntity{
     jtree: JoshuaTree;
@@ -72,7 +72,7 @@ export default class JTreeEntity{
 
             if(!this.jtree.And(bitFlag).Empty()){
                 fn(offset.Add(this.indexToRelativePosition(i)))
-                console.log('hit' + i);
+                //console.log('hit' + i);
             }
         }
     }
@@ -107,17 +107,31 @@ export default class JTreeEntity{
 
     spawnCubes(app: pc.Application){
 
+        let mesh = pc.createBox(app.graphicsDevice);
+        let model = new pc.Model();
+        
+        let node = new pc.GraphNode();
+        let material = new pc.PhongMaterial();
+
         this.depthLoop((pos: Position) =>{
+
+            let pnode = new pc.GraphNode();    
+            pnode.setLocalPosition(pos.x, pos.y, pos.z);
+            let meshInstance = new pc.MeshInstance(pnode, mesh, material, pc.RENDERSTYLE_SOLID, true);
+            app.root.addChild(pnode);
+            model.meshInstances.push(meshInstance);
+            
             let block = new pc.Entity('block');
-            block.addComponent('model', {
-                type: 'box'
-            });
+            //block.addComponent(meshInstance);
             block.setLocalPosition(pos.x, pos.y, pos.z);
             app.root.addChild(block);
-            console.log('hit ' + pos);
+            //console.log('hit ' + pos);
         },
         this.jtree, 0, new Position(0,0,0));
 
-        
+        model.graph = node;
+        app.root.addChild(node);
+        app.scene.addModel(model); 
+
     }
 }
