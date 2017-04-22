@@ -1,2 +1,1 @@
-console.log('yo');
-
+import pc from 'playcanvas';
