@@ -1,5 +1,30 @@
 declare module pc {
+    export let BODYTYPE_DYNAMIC : any;
+    export let KEY_Q : any;
+    export let KEY_W : any;
+    export let KEY_A : any;
+    export let KEY_S : any;
+    export let KEY_D : any;
+
+    export let RENDERSTYLE_SOLID: any;
+
+    // function hacks
+    export let createScript: any;
+
+    export let createBox: any;
+
+    // class hacks
+    export class StandardMaterial{
+        
+    }
+
+    export class GraphNode{
+        setPosition: any;
+        setLocalPosition:any;
+    }
     
+    // End of 'any' hacks
+
     export class Application {
         constructor(canvas: HTMLElement, options: any);
         start: () => void;
@@ -16,8 +41,17 @@ declare module pc {
         touch: pc.input.TouchDevice;
         keyboard: pc.input.Keyboard;
         mouse: pc.input.Mouse;
+        graphicsDevice: pc.GraphicsDevice;
+    }
+
+    export class GraphicsDevice{
+
     }
     
+    export class MeshInstance{
+        constructor(node: GraphNode, mesh: any, material: Material, renderStyle?: any, visible?: boolean)
+        getMaterials: any;
+    }
 
     export class input {
         static KEY_SPACE: number;
@@ -28,6 +62,7 @@ declare module pc {
         export class Mouse {
             constructor(canvas: HTMLElement);
             on: (event: string, callback: (event: any) => void, context: any) => void;
+            static isPointerLocked: () => boolean;
         }
         export class Keyboard {
             constructor(canvas: HTMLElement);
@@ -59,10 +94,10 @@ declare module pc {
         }
     }
 
-    export class Entity {
+    export class Entity extends GraphNode {
         addComponent: (type: string, options?: any) => void;
         removeComponent: (type: string) => void;
-        addChild: (e: Entity) => void;
+        addChild: (e: GraphNode) => void;
         getChildren(): Entity[];
         constructor(name?: string);
 
@@ -112,6 +147,7 @@ declare module pc {
 
     export class Scene {
         ambientLight: Color;
+        addModel: any;
     }
 
     export class RigidBodyComponent {
@@ -141,12 +177,16 @@ declare module pc {
     export class ModelComponent extends Model {
         material: PhongMaterial;
         enabled: boolean;
+        
     }
 
     export class ScriptComponent {
+        [key: string] : any;
         enabled: boolean;
 
         font_renderer: any;
+
+        create: any;
     }
 
     export class ComponentSystemRegistry {
@@ -190,7 +230,10 @@ declare module pc {
 
     export class Material { }
 
-    export class Model extends resource { }
+    export class Model extends resource {
+        graph: GraphNode;
+        meshInstances: MeshInstance[];
+     }
 
 
     export class PhongMaterial extends Material {
