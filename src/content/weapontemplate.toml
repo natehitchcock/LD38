@@ -1,0 +1,20 @@
+title = 'Weapon Template'
+
+#Weapon Details
+[weapon]
+name = 'One Punch Fist'
+flavor_text = "One Serious Punch"
+
+#Technical Specifications
+[data]
+attach_point = 'right hand'
+ammo = 1
+attack_radius = [10, 100000000, 100] # x, y, z = grid squares across, grid squares forward, grid squares up
+can_move = false
+invulnerable_during = true
+terrain_destructor = true
+
+#Timing
+[timing] 
+telegraph_time = 3 #1st step, time in seconds
+attack_duration = 6
