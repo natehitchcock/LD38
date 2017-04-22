@@ -103,8 +103,6 @@ export default class JTreeEntity{
         }
     }
 
-    
-
     spawnCubes(app: pc.Application){
 
         let mesh = pc.createBox(app.graphicsDevice);

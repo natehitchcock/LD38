@@ -1,4 +1,4 @@
-title = World Types
+# World Types
 
 1. Island in a giant ocean
 2. Volcano Land (don't take your kids)
