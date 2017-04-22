@@ -1,9 +1,11 @@
 document.addEventListener('keyup', (e) => {
-    keys[e.key] = true;
+    keys[e.keyCode] = false;
+    keys[e.key] = false;
 });
 
 document.addEventListener('keydown', (e) => {
-    keys[e.key] = false;
+    keys[e.keyCode] = true;
+    keys[e.key] = true;
 });
 
 document.addEventListener('mousemove', e => {
