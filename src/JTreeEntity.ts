@@ -1,4 +1,3 @@
-/*
 import {Uint64, JoshuaTree} from './lib/joshuatree';
 
 let maxNum: Uint64 = new Uint64([4294967295, 4294967295]);
@@ -104,34 +103,7 @@ export default class JTreeEntity{
         }
     }
 
-    spawnCubes(app: pc.Application){
-
-        let mesh = pc.createBox(app.graphicsDevice);
-        let model = new pc.Model();
-        
-        let node = new pc.GraphNode();
-        let material = new pc.PhongMaterial();
-
-        this.depthLoop((pos: Position) =>{
-
-            let pnode = new pc.GraphNode();    
-            pnode.setLocalPosition(pos.x, pos.y, pos.z);
-            let meshInstance = new pc.MeshInstance(pnode, mesh, material, pc.RENDERSTYLE_SOLID, true);
-            app.root.addChild(pnode);
-            model.meshInstances.push(meshInstance);
-            
-            let block = new pc.Entity('block');
-            //block.addComponent(meshInstance);
-            block.setLocalPosition(pos.x, pos.y, pos.z);
-            app.root.addChild(block);
-            //console.log('hit ' + pos);
-        },
-        this.jtree, 0, new Position(0,0,0));
-
-        model.graph = node;
-        app.root.addChild(node);
-        app.scene.addModel(model); 
-
+    spawnCubes(spawnFunc: (pos: Position)=> void){
+        this.depthLoop(spawnFunc, this.jtree, 0, new Position(0,0,0));
     }
 }
-*/
