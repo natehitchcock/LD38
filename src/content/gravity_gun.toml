@@ -8,11 +8,12 @@ flavor_text = 'The Power of Z'
 #Technical Specifications
 [attack_info]
 attach_point = 'left hand'
-ammo = 1
-attack_template = 'cylinder'
+ammo = 10
+attack_template = 'vertical cylinder'
 projectile_spawn_location = 10 #grids in front of you
 attack_radius = [5, 10, 50] # height and width 
 can_move = true
+can_charge = false
 invulnerable_during = false
 terrain_destructor = true
 projectile_dmg = 50
@@ -21,7 +22,7 @@ collision_dmg = 0
 [effects]
 particle_effect = ''
 sfx_on_use = true #with/without text to voice
-sfx = 'Beyooooooooooo'
+sfx = 'Beyooooooooooo' #use gantz:0 soundbyte
 
 #Timing
 [timing] 

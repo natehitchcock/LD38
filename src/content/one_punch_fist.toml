@@ -12,6 +12,7 @@ ammo = 1
 attack_template = 'cylinder'
 attack_radius = [100, 10] # height and width, the formula is V = (pi)(r)^(2)(h) 
 can_move = false
+can_charge = false
 invulnerable_during = true
 terrain_destructor = true
 projectile_dmg = 100
