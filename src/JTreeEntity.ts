@@ -275,6 +275,7 @@ export default class JTreeEntity extends THREE.Object3D {
 
             if(distance <= radius) {
                 // [TODO] remove this node
+                console.log('destroyed a thing!');
             }
 
         }, this.jtree, 0, this.position);

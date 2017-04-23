@@ -3,6 +3,7 @@ import ThirdPersonController from './thirdpersoncontroller';
 import FlyCharacter from './FlyCharacter';
 import * as THREE from 'three';
 import Vox from './o3d/vox';
+import {keys, mouse} from './lib/input';
 
 interface IGameWindow extends Window {
     scene: THREE.Scene;
@@ -70,6 +71,13 @@ const render = () => {
     }else {
         const delta = clock.getDelta();
         controls.tick(delta);
+    }
+
+    // Press x for explosions
+    if(keys.x) {
+        const explosionCenter = new THREE.Vector3(0, 0, 0);
+        const explosionRadius = 10;
+        jtree.detachSubtreeSphere(explosionCenter, explosionRadius);
     }
 
     renderer.render(scene, camera);
