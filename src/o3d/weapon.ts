@@ -12,8 +12,6 @@ interface IWeaponData extends IVoxData {
     ammo: IAmmoData;
 }
 
-
-
 export default class Weapon extends Vox {
     data: IWeaponData;
     ammo: Vox;
@@ -33,11 +31,12 @@ export default class Weapon extends Vox {
     fire() {
         const shell = new THREE.Object3D();
         shell.copy(this.ammo);
-        shell.position.copy(this.position);
-        shell.rotation.copy(this.rotation);
+        shell.position.copy(this.parent.position);
+        shell.rotation.copy(this.parent.rotation);
         shell.rotation.y += (Math.random() - 0.5) * this.data.ammo.spread;
         this.spawned.push(shell);
-        this.parent.add(shell);
+
+        (window as any).scene.add(shell);
     }
 
     tick() {

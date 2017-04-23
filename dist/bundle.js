@@ -903,10 +903,10 @@ exports.default = VoxModel;
 module.exports    = {
 	"type": "Ranged",
 	"default": "idle",
-	"size": 1,
+	"size": 0.2,
 	"position": [
 		0,
-		-20,
+		-0.2,
 		0
 	],
 	"animation": {

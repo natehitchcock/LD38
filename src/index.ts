@@ -3,11 +3,19 @@ import ThirdPersonController from './thirdpersoncontroller';
 import * as THREE from 'three';
 import Vox from './o3d/vox';
 
+interface IGameWindow extends Window {
+    scene: THREE.Scene;
+}
+
+declare const window: IGameWindow;
+
 const charData = require('./content/character/character.toml');
 const testLevel = require('./content/testlevel.toml');
 
 const character = new Vox(charData);
 const scene = new THREE.Scene();
+
+window.scene = scene;
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
