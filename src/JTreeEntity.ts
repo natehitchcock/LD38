@@ -5,14 +5,21 @@ const maxNum: Uint64 = new Uint64([0xFFFFFFFF, 0xFFFFFFFF]);
 const zeroNum: Uint64 = new Uint64([0, 0]);
 const highBit: number = 0x800000;
 
+// Max depth at which there are workable tree nodes
 const maxDepth = 3;
+
+// Which level of node to store combined meshes at
+const depthToStoreMeshes = 2;
 
 // [TODO] refactor jtree to use RTT to detect leaf nodes instead of max depth
 // [TODO] add defines for common 64 bit ints to Uint64
 export class JTreeIterationData {
        position: THREE.Vector3;
+       depth: number;
        extent: number;
-       treeNode: JoshuaTree;
+       nodeKey: number;
+       nodeRef: JoshuaTree;
+       nodeParent: JoshuaTree;
 
        constructor() {
            this.position = new THREE.Vector3();
@@ -21,14 +28,21 @@ export class JTreeIterationData {
 
 export default class JTreeEntity extends THREE.Object3D {
 
-    material: THREE.Material;
-    mergedGeometry: THREE.Geometry;// for mesh combininb impl
     jtree: JoshuaTree;
+
+    // for mesh combining impl
+    material: THREE.Material;
+    // Key in this array is d0Key.d1Key.d2Key...
+    //  for as deep as necessary to hold up to 'depthToStoreMeshes'
+    mergedGeometry: THREE.Geometry[];
+    mergedMeshes: THREE.Mesh[];
 
     constructor(material: THREE.Material) {
         super();
 
         this.material = material;
+        this.mergedGeometry = [];
+        this.mergedMeshes = [];
 
         // bind self to spawn functions, since they are passed around
         this.spawnMergeCubes = this.spawnMergeCubes.bind(this);
@@ -164,13 +178,13 @@ export default class JTreeEntity extends THREE.Object3D {
     }
 
     // [TODO] refactor this function to use a foreach loop only over existing elements
-    leafLoop(fn: (data: JTreeIterationData) => void ,node: JoshuaTree, offset: THREE.Vector3) {
+    leafLoop(fn: (data: JTreeIterationData) => void ,node: JoshuaTree, depth: number, offset: THREE.Vector3) {
         for(let i = 0; i < 64; ++i) {
             const bitFlag = new Uint64();
             bitFlag.Set(i);
 
             // extents of maxdepths children
-            const minExtent = this.getScaledExtent(maxDepth + 1);
+            const minExtent = this.getScaledExtent(depth);
 
             if(!node.And(bitFlag).Empty()) {
                 const data = new JTreeIterationData();
@@ -178,7 +192,9 @@ export default class JTreeEntity extends THREE.Object3D {
                 data.position.add(this.indexToRelativePosition(i));
                 data.position.add(new THREE.Vector3(minExtent, minExtent, minExtent));
                 data.extent = minExtent;
-                data.treeNode = node;
+                data.depth = depth;
+                data.nodeParent = node;
+                data.nodeKey = i;
                 fn(data);
             }
         }
@@ -198,14 +214,17 @@ export default class JTreeEntity extends THREE.Object3D {
             data.position.copy(offset);
             data.position.add(new THREE.Vector3(voxExtent, voxExtent, voxExtent));
             data.extent = voxExtent;
-            data.treeNode = node;
+            data.nodeRef = node;
+            data.nodeParent = node.parent;
+            data.nodeKey = node.key;
+            data.depth = depth;
             fn(data);
         } else if(node.Equals(zeroNum) ) {
             // Skip this branch
         } else {
             // Recurse or render leaf loop
             if(depth === maxDepth ) {
-                this.leafLoop(fn, node, offset);
+                this.leafLoop(fn, node, depth + 1, offset);
             } else {
                 // Call depth node on each child
                 Object.keys(node.children).forEach((childKey: string) => {
@@ -225,16 +244,22 @@ export default class JTreeEntity extends THREE.Object3D {
     spawnMergeCubes(data: JTreeIterationData) {
         const newGeometry = new THREE.BoxGeometry( data.extent * 2, data.extent * 2, data.extent * 2);
         const newGeomTransform = new THREE.Matrix4().makeTranslation(data.position.x, data.position.y, data.position.z);
-        this.mergedGeometry.merge(newGeometry, newGeomTransform);
+
+        const myMeshIndex = this.getHeirarchyIndexByIndexAndParent(data.nodeKey, data.nodeParent, depthToStoreMeshes);
+        if(this.mergedGeometry[myMeshIndex] === undefined) {
+            this.mergedGeometry[myMeshIndex] = new THREE.Geometry();
+        }
+
+        this.mergedGeometry[myMeshIndex].merge(newGeometry, newGeomTransform);
     }
 
     spawnCubes() {
-        this.mergedGeometry = new THREE.Geometry();
-
         this.depthLoop(this.spawnMergeCubes, this.jtree, 0, new THREE.Vector3(0, 0, 0));
 
-        const mergedMesh = new THREE.Mesh(this.mergedGeometry, this.material);
-        this.add(mergedMesh);
+        this.mergedGeometry.forEach((value: THREE.Geometry, index: number) => {
+            this.mergedMeshes[index] = new THREE.Mesh(value, this.material);
+            this.add(this.mergedMeshes[index]);
+        });
     }
 
     calculateCenterOfMass(): THREE.Vector3 {
@@ -260,12 +285,36 @@ export default class JTreeEntity extends THREE.Object3D {
         return centerOfMass;
     }
 
+    getHeirarchyIndexByIndexAndParent(index: number, parentNode: JoshuaTree, maxdepth: number = 4) {
+        let key = index << 3;
+        const node = parentNode;
+        for(let i = 1; i < maxDepth && node && node.parent; ++i) {
+            const shifted = node.key << 3;
+            key >>= 1;
+            key &= shifted;
+        }
+
+        return key;
+    }
+
+    // [WARN] will have trouble with depths > 4
+    getHeirarchyIndexByNode(node: JoshuaTree, maxdepth: number = 4) {
+        let key = 0;
+        for(let i = 0; i < maxDepth && node && node.parent; ++i) {
+            const shifted = node.key << 3;
+            key >>= 1;
+            key &= shifted;
+        }
+
+        return key;
+    }
+
     detachSubtreeSphere(center: THREE.Vector3, radius: number): void {
         // [TODO] separate a subtree and return it
-        //      [ITR1] destroy the subtree
-        //      [ITR2] separate subtree, destroy it
-        //      [ITR3] separate subtree, give it a velocity and spin
-        //      [ITR4] separate subtree, fragment it (sub- separations)
+        //      [ITR.1.1] split large chunks
+        //      [ITR.2] separate subtree, destroy it
+        //      [ITR.3] separate subtree, give it a velocity and spin
+        //      [ITR.4] separate subtree, fragment it (sub- separations)
 
         this.depthLoop((data: JTreeIterationData)=> {
             const localCenter = new THREE.Vector3().copy(data.position);
@@ -274,10 +323,17 @@ export default class JTreeEntity extends THREE.Object3D {
             const distance = deltaVec.length();
 
             if(distance <= radius) {
-                // [TODO] remove this node
-                console.log('destroyed a thing!');
+                const nodeParent = data.nodeParent;
+                nodeParent.Remove(data.nodeKey);
             }
 
         }, this.jtree, 0, this.position);
+
+        // Clean out the merged mesh
+        //this.remove(this.mergedMesh);
+        //delete this.mergedMesh;
+
+        // [SLOW] Repopulate the jtree from scratch
+        //this.spawnCubes();
     }
 }
