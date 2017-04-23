@@ -1,0 +1,12 @@
+default = "walk"
+
+[[animations.walk]]
+    size = 1
+    speed = 100
+    vox = [
+        "chr_walkcycle-00.vox",
+        "chr_walkcycle-02.vox",
+        "chr_walkcycle-03.vox",
+        "chr_walkcycle-04.vox",
+        "chr_walkcycle-05.vox"
+    ]

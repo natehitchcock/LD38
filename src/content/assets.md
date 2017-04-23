@@ -2,7 +2,7 @@ Assets to create (and destroy)
 
 1. Tree
 2. Mountain
-3. Bushgit
+3. Bush
 4. Wall
 5. Building
 6. Meteor

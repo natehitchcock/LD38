@@ -1,6 +1,9 @@
-import * as THREE from 'three';
-import FlyCharacter from './FlyCharacter';
 import JTreeEntity from './JTreeEntity';
+import ThirdPersonController from './thirdpersoncontroller';
+import * as THREE from 'three';
+import Vox from './lib/vox';
+
+declare var vox: any;
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -9,8 +12,9 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-let character = new FlyCharacter(camera);
-
+let jtree = new JTreeEntity();
+const character = new THREE.Object3D();
+let controls = new ThirdPersonController(camera, character, jtree.jtree);
 let clock = new THREE.Clock();
 
 camera.position.z = 25;
@@ -19,15 +23,10 @@ let uniforms = {
     fcolor: {value: new THREE.Vector4(0, 1, 0, 1)}
 };
 
-var material = new THREE.ShaderMaterial({
-    uniforms: uniforms,
-    vertexShader: document.getElementById( 'vertexShader' ).textContent,
-    fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-});
+var material = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
 
 let mergedGeometry = new THREE.Geometry();
 
-let jtree = new JTreeEntity();
 jtree.generateJTreeSphere(new THREE.Vector3(0, 0, 0), 4.5);
 //jtree.generateJTree();
 jtree.spawnCubes((pos, extent) => {
@@ -37,12 +36,16 @@ jtree.spawnCubes((pos, extent) => {
 });
 
 let mergedMesh = new THREE.Mesh(mergedGeometry, material);
+
 scene.add( mergedMesh );
+scene.add(character);
+scene.add(new THREE.DirectionalLight());
+scene.add(new THREE.AmbientLight());
 
 var render = function () {
-    requestAnimationFrame( render );
-
-    character.update(clock);
+    const delta = clock.getDelta();
+    requestAnimationFrame(render);
+    controls.tick(delta);
 
     renderer.render(scene, camera);
 };

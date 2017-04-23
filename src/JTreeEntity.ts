@@ -5,6 +5,7 @@ let maxNum: Uint64 = new Uint64([0xFFFFFFFF, 0xFFFFFFFF]);
 let zeroNum: Uint64 = new Uint64([0, 0]);
 let highBit: number = 0x800000;
 
+
 let maxDepth = 1;
 
 // [TODO] refactor jtree to use RTT to detect leaf nodes instead of max depth
@@ -199,3 +200,4 @@ export default class JTreeEntity{
         this.depthLoop(spawnFunc, this.jtree, 0, new THREE.Vector3(0,0,0));
     }
 }
+

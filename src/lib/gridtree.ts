@@ -48,6 +48,7 @@ export default class GridTree extends JoshuaTree {
 
     onMessage(msg: TreeUpdate) {
         const loc = msg.location.shift();
+        
         if(msg.location.length > 0) {
             this.children[loc].onMessage(msg);
         } 

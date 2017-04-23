@@ -55,6 +55,7 @@ export default class FlyCharacter{
                 this.cameraRef.position, 
                 forwardMove);
         }
+
         if(keys.e){
             let upMove = new THREE.Vector3().copy(this.up);
             upMove.multiplyScalar(this.speed * dt);
@@ -63,6 +64,7 @@ export default class FlyCharacter{
                 this.cameraRef.position, 
                 upMove);
         }
+        
         if(keys.q){
             let upMove = new THREE.Vector3().copy(this.up);
             upMove.multiplyScalar(-this.speed * dt);
