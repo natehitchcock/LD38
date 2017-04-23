@@ -1,17 +1,9 @@
-
 import JTreeEntity from './JTreeEntity';
 import ThirdPersonController from './thirdpersoncontroller';
 import * as THREE from 'three';
+import Vox from './lib/vox';
 
 declare var vox: any;
-
-var parser = new vox.Parser();
-parser.parse("./vox/chr_walkcycle-00.vox").then(function(voxelData) {
-    var param = { voxelSize: 0.02 };
-    var builder = new vox.MeshBuilder(voxelData, param);
-    var mesh = builder.createMesh();
-    character.add(mesh);
-});
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );

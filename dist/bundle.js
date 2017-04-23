@@ -223,13 +223,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var JTreeEntity_1 = __webpack_require__(1);
 var thirdpersoncontroller_1 = __webpack_require__(2);
 var THREE = __webpack_require__(0);
-var parser = new vox.Parser();
-parser.parse("./vox/chr_walkcycle-00.vox").then(function (voxelData) {
-    var param = { voxelSize: 0.02 };
-    var builder = new vox.MeshBuilder(voxelData, param);
-    var mesh = builder.createMesh();
-    character.add(mesh);
-});
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 var renderer = new THREE.WebGLRenderer();
@@ -287,6 +280,10 @@ document.addEventListener('mousemove', function (e) {
 document.addEventListener('mousedown', function (e) {
     exports.mouse.left = true;
 });
+var foo = 'bar';
+function faz() {
+    var foo = 'zoo';
+}
 document.addEventListener('mouseup', function (e) {
     exports.mouse.left = false;
 });
