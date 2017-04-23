@@ -1,6 +1,7 @@
 import JTreeEntity from './JTreeEntity';
 import ThirdPersonController from './thirdpersoncontroller';
 import FlyCharacter from './FlyCharacter';
+import CinematicController from './cinematiccontroller';
 import * as THREE from 'three';
 import Vox from './o3d/vox';
 import {keys, mouse} from './lib/input';
@@ -25,7 +26,7 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 let flyControls: FlyCharacter;
-let controls: ThirdPersonController;
+let controls: CinematicController;
 const clock = new THREE.Clock();
 
 camera.position.z = 10;
@@ -50,8 +51,7 @@ if(debugControls) {
     flyControls = new FlyCharacter(camera);
 }else {
     const character = new Vox(charData);
-    controls = new ThirdPersonController(camera, character);
-    scene.add(character);
+    controls = new CinematicController(camera);
 }
 
 scene.add(new Vox(testLevel));
@@ -61,14 +61,6 @@ scene.add(new THREE.AmbientLight());
 
 const direction = 1;
 
-let soundFired = false;
-const sound = new Howl.Howl({
-  src: ['./sfx/sacktap.wav'],
-  onend: () => {
-    soundFired = false;
-  },
-});
-
 const render = () => {
     requestAnimationFrame(render);
 
@@ -77,12 +69,6 @@ const render = () => {
     }else {
         const delta = clock.getDelta();
         controls.tick(delta);
-    }
-
-    if(keys.x && !soundFired) {
-        console.log('playing sound');
-        soundFired = true;
-        sound.play();
     }
 
     renderer.render(scene, camera);
