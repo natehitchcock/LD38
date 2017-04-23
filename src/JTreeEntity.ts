@@ -6,7 +6,7 @@ let zeroNum: Uint64 = new Uint64([0, 0]);
 let highBit: number = 0x800000;
 
 
-let maxDepth = 1;
+let maxDepth = 3;
 
 // [TODO] refactor jtree to use RTT to detect leaf nodes instead of max depth
 // [TODO] add defines for common 64 bit ints to Uint64
@@ -33,7 +33,7 @@ export default class JTreeEntity{
     }
 
     generateJTreeSphere(center: THREE.Vector3, radius: number){
-        console.log('generating voxels');
+        //console.log('generating voxels');
         this.jtree = new JoshuaTree();
         this.generateJTreeSphere_internal(center, radius, this.jtree, new THREE.Vector3(0, 0, 0), 0);
     }
@@ -41,7 +41,7 @@ export default class JTreeEntity{
         let dvec = new THREE.Vector3().copy(point);
         dvec = dvec.sub(center);
         let distance = dvec.length();
-        console.log(distance);
+        //console.log(distance);
 
         return distance <= radius;
     }
@@ -49,7 +49,7 @@ export default class JTreeEntity{
         let corners = [];
 
         let center = new THREE.Vector3().copy(corner).add(new THREE.Vector3(extent, extent, extent));
-        console.log('corner ' + corner.x + ', ' + corner.y + ', ' + corner.z + ' extent ' + extent);
+        //console.log('corner ' + corner.x + ', ' + corner.y + ', ' + corner.z + ' extent ' + extent);
 
         let cornerRUF = new THREE.Vector3().copy(center);
         cornerRUF.add(new THREE.Vector3(extent, extent, extent));
@@ -80,10 +80,10 @@ export default class JTreeEntity{
     }
     generateJTreeSphere_internal(center: THREE.Vector3, radius: number, root: JoshuaTree, rootPosition: THREE.Vector3, depth: number){
         let childVoxExtent = this.getScaledExtent(depth + 1);
-        console.log('extent ' + childVoxExtent);
+        //console.log('extent ' + childVoxExtent);
 
         if(depth > maxDepth){
-            console.log('too deep');
+            //console.log('too deep');
             return;
         }
 
@@ -95,8 +95,8 @@ export default class JTreeEntity{
             let totallyWithinSphere = true;
             let totallyOutsideSphere = true;
             corners.forEach((currentValue: THREE.Vector3, index: number, array: THREE.Vector3[]) => {
-                console.log('testing ' + currentValue.x +', ' + currentValue.y +', '+ currentValue.z + ' against ' 
-                + center.x + ', ' + center.y + ', ' + center.z + ' r ' + radius);
+                //console.log('testing ' + currentValue.x +', ' + currentValue.y +', '+ currentValue.z + ' against ' 
+                //+ center.x + ', ' + center.y + ', ' + center.z + ' r ' + radius);
                 if(this.pointWithinSphere(center, radius, currentValue)){
                     totallyOutsideSphere = false;
                 }
@@ -109,16 +109,17 @@ export default class JTreeEntity{
             //let sphereWithinVox = false;
 
             if(totallyWithinSphere) {
-                console.log('full');
+                //console.log('full');
                 let jchild = new JoshuaTree();
                 jchild.Copy(maxNum); 
                 root.Add(i, jchild);
             } else if(totallyOutsideSphere) {
-                console.log('empty');
+                //console.log('empty');
             } else {
-                console.log('digging');
+                //console.log('digging');
                 let jchild = new JoshuaTree(); 
                 root.Add(i, jchild);
+                //console.log('new root at ' + voxCorner.x + ', ' + voxCorner.y + ', ' + voxCorner.z)
                 this.generateJTreeSphere_internal(center, radius, jchild, voxCorner, depth + 1);
             }
         }
@@ -155,10 +156,13 @@ export default class JTreeEntity{
             let bitFlag = new Uint64();
             bitFlag.Set(i);
 
-            if(!this.jtree.And(bitFlag).Empty()){
+            let extent = 0.5;
+            if(!node.And(bitFlag).Empty()){
                 let toff = new THREE.Vector3().copy(offset);
-                fn(toff.add(this.indexToRelativePosition(i)), maxDepth);
-                console.log('hit' + i);
+                toff.add(this.indexToRelativePosition(i));
+                toff.add(new THREE.Vector3(extent, extent, extent));
+                fn(toff, extent);
+                //console.log('hit' + i);
             }
         }
     }
@@ -173,8 +177,10 @@ export default class JTreeEntity{
 
         if(node.Equals(maxNum)) {
             // Render a large cube
-            fn(offset, voxExtent);
-            console.log('found whole cube');
+            let toff = new THREE.Vector3().copy(offset);
+            toff.add(new THREE.Vector3(voxExtent, voxExtent, voxExtent))
+            fn(toff, voxExtent);
+            //console.log('found whole cube');
         } else if(node.Equals(zeroNum) ){
             // Skip this branch 
         } else {
@@ -183,11 +189,12 @@ export default class JTreeEntity{
                 this.leafLoop(fn, node, offset);
             } else {
                 // Call depth node on each child
-                Object.keys(this.jtree.children).forEach((childKey: string) => {
-                    const child = this.jtree.children[childKey];
+                Object.keys(node.children).forEach((childKey: string) => {
+                    const child = node.children[childKey];
                     if(child instanceof JoshuaTree) {
                         let toff = new THREE.Vector3().copy(offset);
                         let keynum = parseInt(childKey);
+                        console.log(childKey);
                         this.depthLoop(fn, child, depth + 1,
                          toff.add(this.indexToScaledRelativePosition(keynum, depth))); 
                     }    

@@ -98,7 +98,7 @@ export default class FlyCharacter{
             this.rotY %= 360;
         }
 
-        let degToRad = 3.14159/180
+        let degToRad = 3.14159/180;
         let rotYRad = this.rotY * degToRad;
         let rotXRad = this.rotX * degToRad;
         this.cameraRef.rotation.setFromVector3(new THREE.Vector3(0, 0, 0));
