@@ -48,7 +48,7 @@ jtree.spawnCubes();
 const debugControls = true;
 if(debugControls) {
     flyControls = new FlyCharacter(camera);
-}else{
+}else {
     const character = new Vox(charData);
     controls = new ThirdPersonController(camera, character);
     scene.add(character);
@@ -71,13 +71,6 @@ const render = () => {
     }else {
         const delta = clock.getDelta();
         controls.tick(delta);
-    }
-
-    // Press x for explosions
-    if(keys.x) {
-        const explosionCenter = new THREE.Vector3(0, 0, 0);
-        const explosionRadius = 10;
-        jtree.detachSubtreeSphere(explosionCenter, explosionRadius);
     }
 
     renderer.render(scene, camera);

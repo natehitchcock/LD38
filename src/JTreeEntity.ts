@@ -201,9 +201,23 @@ export default class JTreeEntity extends THREE.Object3D {
     }
 
     depthLoop(fn: (data: JTreeIterationData) => void,
-              node: JoshuaTree, depth: number, offset: THREE.Vector3) {
+              node: JoshuaTree, depth: number, offset: THREE.Vector3, targetNodeList?: number[]) {
         if(depth > maxDepth) {
             return;
+        }
+
+        if(targetNodeList !== undefined) {
+            let shouldTraverseNode = false;
+            const heirKey = this.getHeirarchyIndexByNode(node);
+            targetNodeList.map((value: number) => {
+                // heirKey for this node is equal to a target value
+                //  or heir key is for a child of target value
+                shouldTraverseNode = shouldTraverseNode || ((heirKey & value) === value);
+            });
+
+            if(!shouldTraverseNode) {
+                return;
+            }
         }
 
         const voxExtent = this.getScaledExtent(depth);
@@ -290,7 +304,7 @@ export default class JTreeEntity extends THREE.Object3D {
         const node = parentNode;
         for(let i = 1; i < maxDepth && node && node.parent; ++i) {
             const shifted = node.key << 3;
-            key >>= 1;
+            key = key >> 1;
             key &= shifted;
         }
 
@@ -302,7 +316,7 @@ export default class JTreeEntity extends THREE.Object3D {
         let key = 0;
         for(let i = 0; i < maxDepth && node && node.parent; ++i) {
             const shifted = node.key << 3;
-            key >>= 1;
+            key = key >> 1;
             key &= shifted;
         }
 
@@ -316,6 +330,8 @@ export default class JTreeEntity extends THREE.Object3D {
         //      [ITR.3] separate subtree, give it a velocity and spin
         //      [ITR.4] separate subtree, fragment it (sub- separations)
 
+        const indicesToRerasterize = [];
+
         this.depthLoop((data: JTreeIterationData)=> {
             const localCenter = new THREE.Vector3().copy(data.position);
             const deltaVec = localCenter.sub(center);
@@ -325,9 +341,16 @@ export default class JTreeEntity extends THREE.Object3D {
             if(distance <= radius) {
                 const nodeParent = data.nodeParent;
                 nodeParent.Remove(data.nodeKey);
+
+                const heirInd = this.getHeirarchyIndexByIndexAndParent(data.nodeKey, nodeParent, depthToStoreMeshes);
+                if(!indicesToRerasterize.includes(heirInd)) {
+                    indicesToRerasterize.push(heirInd);
+                }
             }
 
         }, this.jtree, 0, this.position);
+
+        console.log(indicesToRerasterize);
 
         // Clean out the merged mesh
         //this.remove(this.mergedMesh);
