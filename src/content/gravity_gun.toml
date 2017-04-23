@@ -4,6 +4,7 @@ type = 'Ranged'
 [weapon]
 name = 'Gravity Gun'
 flavor_text = 'The Power of Z'
+mesh = 'z_gun.vox'
 
 #Technical Specifications
 [attack_info]
