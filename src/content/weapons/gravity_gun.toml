@@ -4,14 +4,16 @@ type = 'Ranged'
 [weapon]
 name = 'Gravity Gun'
 flavor_text = 'The Power of Z'
-mesh = 'z_gun.vox'
+model = 'z_gun.vox'
 
 #Technical Specifications
+
 [attack_info]
 attach_point = 'left hand'
 ammo = 10
 attack_template = 'vertical cylinder'
 projectile_spawn_location = 10 #grids in front of you
+bullet_size = [5, 10,50]
 attack_radius = [5, 10, 50] # height and width 
 can_move = true
 can_charge = false

@@ -1,0 +1,34 @@
+type = 'Ranged'
+
+#Weapon Details
+[weapon]
+name = 'Hulking Blaster'
+flavor_text = '...and they shall know no fear.'
+model = 'bolter.vox'
+
+#Technical Specifications
+
+[attack_info]
+attach_point = 'right hand'
+ammo = 40 
+attack_template = 'square'
+projectile_spawn_location = 0 #grids in front of you
+bullet_size = [0.5, 0.5, 0.5] # smaller than the player character
+attack_radius = [1, 1, 1] # height and width 
+can_move = true
+can_charge = true
+invulnerable_during = false
+terrain_destructor = true
+projectile_dmg = 17.5 #per second of being hit
+collision_dmg = 0
+velocity = 60 #meters per second? 
+
+[effects]
+particle_effect = 'laser'
+sfx_on_use = true #with/without text to voice
+sfx = 'Poww' #use warhammer audio
+
+#Timing
+[timing] 
+telegraph_time = 0 #1st step, time in seconds
+attack_duration = 0.8

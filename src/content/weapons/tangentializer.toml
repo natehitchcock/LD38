@@ -4,13 +4,16 @@ type = 'Ranged'
 [weapon]
 name = 'Tangentializer'
 flavor_text = 'What were we doing?'
+model = ''
 
 #Technical Specifications
+
 [attack_info]
 attach_point = 'right hand'
 ammo = 20
 attack_template = 'square'
 projectile_spawn_location = 2 #grids in front of you
+bullet_size = 'gyfycat.jpg'
 attack_radius = [2, 2, 0] # height and width 
 can_move = true
 can_charge = false
