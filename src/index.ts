@@ -13,30 +13,32 @@ let character = new FlyCharacter(camera);
 
 let clock = new THREE.Clock();
 
-camera.position.z = 5;
+camera.position.z = 25;
 var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
 let uniforms = {
-    color: {value: new THREE.Vector4(0, 1, 0, 1)}
+    fcolor: {value: new THREE.Vector4(0, 1, 0, 1)}
 };
 
-// var material = new THREE.ShaderMaterial( {
-//     uniforms: uniforms,
-//     vertexShader: document.getElementById( 'vertexShader' ).textContent,
-//     fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-// } );
-
-var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-
-let jtree = new JTreeEntity();
-jtree.generateJTree();
-jtree.spawnCubes(pos =>{    
-    var cube = new THREE.Mesh( geometry, material );
-    cube.position.copy(new THREE.Vector3(pos.x, pos.y, pos.z));
-    scene.add( cube );
-    //console.log('hit ' + pos);
+var material = new THREE.ShaderMaterial({
+    uniforms: uniforms,
+    vertexShader: document.getElementById( 'vertexShader' ).textContent,
+    fragmentShader: document.getElementById( 'fragmentShader' ).textContent
 });
 
-let direction = 1;
+let mergedGeometry = new THREE.Geometry();
+
+let jtree = new JTreeEntity();
+jtree.generateJTreeSphere(new THREE.Vector3(0, 0, 0), 4.5);
+//jtree.generateJTree();
+jtree.spawnCubes((pos, extent) => {
+    var newGeometry = new THREE.BoxGeometry( extent * 2, extent * 2, extent * 2);
+    mergedGeometry.merge(newGeometry,new THREE.Matrix4().makeTranslation(pos.x, pos.y, pos.z));
+    console.log('generated vox ' + pos + '  size  ' + extent);
+});
+
+let mergedMesh = new THREE.Mesh(mergedGeometry, material);
+scene.add( mergedMesh );
+
 var render = function () {
     requestAnimationFrame( render );
 
