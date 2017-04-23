@@ -4,14 +4,16 @@ type = 'Melee/Ranged'
 [weapon]
 name = 'One Punch Fist'
 flavor_text = 'One Serious Punch'
-mesh = 'one_punch_fist.vox'
+model = 'one_punch_fist.vox'
 
 #Technical Specifications
+
 [attack_info]
 attach_point = 'right hand'
 ammo = 1
 attack_template = 'cylinder'
 projectile_spawn_location = 0
+bullet_size = []
 attack_radius = [100, 10] # height and width, the formula is V = (pi)(r)^(2)(h) 
 can_move = false
 can_charge = false

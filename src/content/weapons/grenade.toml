@@ -4,13 +4,16 @@ type = 'Thrown'
 [weapon]
 name = 'Frag Grenade'
 flavor_text = 'Boom'
+model = 'grenade.vox'
 
 #Technical Specifications
+
 [attack_info]
 attach_point = 'left hand'
 ammo = 1
 attack_template = 'square'
 projectile_spawn_location = 1 #grids in front of you
+bullet_size = [0.3, 0.3, 0.3]
 attack_radius = [5, 5, 5] # height and width
 can_move = true
 can_charge = true

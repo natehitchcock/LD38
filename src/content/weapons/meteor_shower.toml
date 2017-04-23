@@ -2,16 +2,18 @@ type = 'Ranged'
 
 #Weapon Details
 [weapon]
-name = 'Tangentializer'
-flavor_text = 'What were we doing?'
-mesh = ''
+name = 'Meteor'
+flavor_text = 'Probably not a good idea.'
+model = ''
 
 #Technical Specifications
+
 [attack_info]
 attach_point = 'right hand'
 ammo = 20
 attack_template = 'square'
 projectile_spawn_location = [2, 100] #grids in front of you, grids above you
+bullet_size = [1, 1, 1]
 attack_radius = [15, 15, 15] # height and width 
 can_move = false
 can_charge = false
