@@ -33,7 +33,7 @@ const uniforms = {
     color: {value: new THREE.Vector4(0, 1, 0, 1)},
 };
 
-const material = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
+const material = new THREE.MeshPhongMaterial( {color: 0xA0522D} );
 
 let mergedGeometry = new THREE.Geometry();
 
