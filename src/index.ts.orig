@@ -27,6 +27,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
+let flyControls: FlyCharacter;
 let controls: CinematicController;
 const clock = new THREE.Clock();
 
@@ -47,10 +48,13 @@ jtree.position.copy(new THREE.Vector3(-4, 0, -40));
 jtree.generateJTreeSphere(sphereCenter, sphereRadius);
 jtree.spawnCubes();
 
-
-const character = new Vox(charData);
-controls = new CinematicController(camera);
-
+const debugControls = true;
+if(debugControls) {
+    flyControls = new FlyCharacter(camera);
+}else {
+    const character = new Vox(charData);
+    controls = new CinematicController(camera);
+}
 
 const makeDinoMite = () => {
     const o3d = new Vox(dinoMite);
@@ -72,6 +76,7 @@ scene.add(new THREE.AmbientLight());
 
 const direction = 1;
 
+<<<<<<< HEAD
 let soundFired = false;
 const sound = new Howl.Howl({
   src: ['./sfx/sacktap.wav'],
@@ -87,10 +92,17 @@ const music = new Howl.Howl({
 music.loop(true);
 music.play();
 
+=======
+>>>>>>> b5d55415773eb14f659da4f6740054ff28d6666c
 const render = () => {
     requestAnimationFrame(render);
-    const delta = clock.getDelta();
-    controls.tick(delta);
+
+    if(debugControls) {
+        flyControls.update(clock);
+    }else {
+        const delta = clock.getDelta();
+        controls.tick(delta);
+    }
 
     renderer.render(scene, camera);
 };
