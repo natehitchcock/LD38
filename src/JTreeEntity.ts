@@ -6,10 +6,10 @@ const zeroNum: Uint64 = new Uint64([0, 0]);
 const highBit: number = 0x800000;
 
 // Max depth at which there are workable tree nodes
-const maxDepth = 3;
+const maxDepth = 1;
 
 // Which level of node to store combined meshes at
-const depthToStoreMeshes = 2;
+const depthToStoreMeshes = 1;
 
 // [TODO] refactor jtree to use RTT to detect leaf nodes instead of max depth
 // [TODO] add defines for common 64 bit ints to Uint64
