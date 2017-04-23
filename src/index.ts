@@ -1,6 +1,17 @@
-import * as THREE from 'three';
-import FlyCharacter from './FlyCharacter';
+
 import JTreeEntity from './JTreeEntity';
+import ThirdPersonController from './thirdpersoncontroller';
+import * as THREE from 'three';
+
+declare var vox: any;
+
+var parser = new vox.Parser();
+parser.parse("./vox/chr_walkcycle-00.vox").then(function(voxelData) {
+    var param = { voxelSize: 0.02 };
+    var builder = new vox.MeshBuilder(voxelData, param);
+    var mesh = builder.createMesh();
+    character.add(mesh);
+});
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -9,8 +20,8 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-let character = new FlyCharacter(camera);
-
+const character = new THREE.Object3D();
+let controls = new ThirdPersonController(camera, character);
 let clock = new THREE.Clock();
 
 camera.position.z = 5;
@@ -19,13 +30,7 @@ let uniforms = {
     color: {value: new THREE.Vector4(0, 1, 0, 1)}
 };
 
-// var material = new THREE.ShaderMaterial( {
-//     uniforms: uniforms,
-//     vertexShader: document.getElementById( 'vertexShader' ).textContent,
-//     fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-// } );
-
-var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+var material = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
 
 let jtree = new JTreeEntity();
 jtree.generateJTree();
@@ -36,11 +41,16 @@ jtree.spawnCubes(pos =>{
     //console.log('hit ' + pos);
 });
 
-let direction = 1;
-var render = function () {
-    requestAnimationFrame( render );
+scene.add(character);
+scene.add(new THREE.DirectionalLight());
+scene.add(new THREE.AmbientLight());
 
-    character.update(clock);
+let direction = 1;
+
+var render = function () {
+    const delta = clock.getDelta();
+    requestAnimationFrame(render);
+    controls.tick(delta);
 
     renderer.render(scene, camera);
 };
