@@ -5,6 +5,7 @@ default = "walk"
     speed = 100
     vox = [
         "chr_walkcycle-00.vox",
+        "chr_walkcycle-01.vox",
         "chr_walkcycle-02.vox",
         "chr_walkcycle-03.vox",
         "chr_walkcycle-04.vox",
