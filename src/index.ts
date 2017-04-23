@@ -4,8 +4,7 @@ import FlyCharacter from './FlyCharacter';
 import * as THREE from 'three';
 import Vox from './o3d/vox';
 import {keys, mouse} from './lib/input';
-
-const gameConfig = require('./content/game.toml');
+import * as Howl from 'howler';
 
 interface IGameWindow extends Window {
     scene: THREE.Scene;
@@ -29,7 +28,8 @@ let flyControls: FlyCharacter;
 let controls: ThirdPersonController;
 const clock = new THREE.Clock();
 
-camera.position.z = 5;
+camera.position.z = 10;
+camera.position.y = 2;
 
 const uniforms = {
     color: {value: new THREE.Vector4(0, 1, 0, 1)},
@@ -37,49 +37,52 @@ const uniforms = {
 
 const material = new THREE.MeshPhongMaterial( {color: 0xA0522D} );
 
-const sphereCenter = new THREE.Vector3(80, 80, 80);
-const sphereRadius = 40;
+const sphereCenter = new THREE.Vector3(4, 4, 4);
+const sphereRadius = 4;
 const jtree = new JTreeEntity(material);
 
-jtree.position.copy(new THREE.Vector3(-80, -122, -80));
-console.log('generating jtree sphere shape...');
+jtree.position.copy(new THREE.Vector3(-4, 0, -40));
 jtree.generateJTreeSphere(sphereCenter, sphereRadius);
-console.log('generating and combining meshes...');
 jtree.spawnCubes();
 
-
-if(gameConfig.debug_controls) {
+const debugControls = true;
+if(debugControls) {
     flyControls = new FlyCharacter(camera);
-} else {
+}else {
     const character = new Vox(charData);
     controls = new ThirdPersonController(camera, character);
     scene.add(character);
 }
 
-const jtreeCoM = jtree.calculateCenterOfMass();
-console.log('center of mass is ' + jtreeCoM.x + ', ' + jtreeCoM.y + ', ' + jtreeCoM.z);
-
+scene.add(new Vox(testLevel));
 scene.add(jtree);
 scene.add(new THREE.DirectionalLight());
 scene.add(new THREE.AmbientLight());
 
 const direction = 1;
 
+let soundFired = false;
+const sound = new Howl.Howl({
+  src: ['./sfx/sacktap.wav'],
+  onend: () => {
+    soundFired = false;
+  },
+});
+
 const render = () => {
     requestAnimationFrame(render);
 
-    if(gameConfig.debug_controls) {
+    if(debugControls) {
         flyControls.update(clock);
     }else {
         const delta = clock.getDelta();
         controls.tick(delta);
     }
 
-    // Press x for explosions
-    if(keys.x) {
-        const explosionCenter = new THREE.Vector3(0, 0, 0);
-        const explosionRadius = 10;
-        jtree.detachSubtreeSphere(explosionCenter, explosionRadius);
+    if(keys.x && !soundFired) {
+        console.log('playing sound');
+        soundFired = true;
+        sound.play();
     }
 
     renderer.render(scene, camera);
