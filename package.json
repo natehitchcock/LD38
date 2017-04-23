@@ -26,6 +26,7 @@
     "awesome-typescript-loader": "^3.1.2",
     "node-static": "^0.7.9",
     "source-map-loader": "^0.2.1",
+    "tslint": "^5.1.0",
     "typescript": "^2.2.2",
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.2"

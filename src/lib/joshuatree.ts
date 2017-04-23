@@ -119,12 +119,12 @@ export class JoshuaTree extends Uint64 {
 
     ForEach(fn: (node: JoshuaTree, key?: string) => void, key?: string) {
         fn(this, key);
-        
+
         Object.keys(this.children).forEach((childKey: string) => {
             const child = this.children[childKey];
             if(child instanceof JoshuaTree) {
                 child.ForEach(fn, childKey);
-            }    
+            }
         });
     }
 }

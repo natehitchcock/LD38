@@ -4,7 +4,6 @@ let maxNum: Uint64 = new Uint64([4294967295, 4294967295]);
 let zeroNum: Uint64 = new Uint64([0, 0]);
 let highBit: number = 0x800000;
 
-
 class Position {
     x: number;
     y: number;
@@ -107,3 +106,4 @@ export default class JTreeEntity{
         this.depthLoop(spawnFunc, this.jtree, 0, new Position(0,0,0));
     }
 }
+
