@@ -15,6 +15,16 @@ let clock = new THREE.Clock();
 
 camera.position.z = 5;
 var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+let uniforms = {
+    color: {value: new THREE.Vector4(0, 1, 0, 1)}
+};
+
+// var material = new THREE.ShaderMaterial( {
+//     uniforms: uniforms,
+//     vertexShader: document.getElementById( 'vertexShader' ).textContent,
+//     fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+// } );
+
 var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 
 let jtree = new JTreeEntity();

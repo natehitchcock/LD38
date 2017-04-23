@@ -25,7 +25,7 @@ class Position {
     }
 }
 
-let maxDepth = 2;
+let maxDepth = 0;
 
 export default class JTreeEntity{
     jtree: JoshuaTree;
