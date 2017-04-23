@@ -7,6 +7,7 @@
     "binary-loader": "0.0.1",
     "express": "^4.15.2",
     "freeice": "^2.2.0",
+    "howler": "^2.0.3",
     "rtc-quickconnect": "^5.8.0",
     "socket.io": "^1.7.3",
     "tape": "^4.6.3",
