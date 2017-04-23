@@ -1,12 +1,16 @@
-speed = 2
-lerp = 0.5
+[movement]
+    speed = 2
+    turn = 0.2
 
-[distance]
+[camera]
+    lerp = 0.5
+
+[camera.distance]
     x = 0
     y = 2
-    z = -0.5
+    z = -0.7
 
-[offset]
+[camera.offset]
     x = 0
     y = 0
-    z = 1
+    z = 0.5

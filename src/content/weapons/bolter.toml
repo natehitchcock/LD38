@@ -1,10 +1,35 @@
 type = 'Ranged'
+default = 'idle'
+size = 0.01
+rotation = [0, -90, 0]
+position = [-0.08, 0.1, 0.1]
+
+[animation.idle]
+    time = 100000
+    vox = [
+        "weapons/bolter.vox"
+    ]
+
+[ammo]
+    default = "idle"
+    size = 0.01
+    speed = 5
+    spread = 0.1
+    ttl = 1000
+    rate = 100
+    rotation = [0, -90, 0]
+    position = [-0.08, 0.1, 0.25]
+
+[ammo.animation.idle]
+    speed = 1000
+    vox = [
+        "ammo/charged_shell.vox"
+    ]
 
 #Weapon Details
 [weapon]
 name = 'Hulking Blaster'
 flavor_text = '...and they shall know no fear.'
-model = 'bolter.vox'
 
 #Technical Specifications
 

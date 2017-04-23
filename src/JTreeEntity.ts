@@ -203,8 +203,8 @@ export default class JTreeEntity{
         }
     }
 
-    spawnCubes(spawnFunc: (pos: THREE.Vector3, extent: number)=> void){
-        this.depthLoop(spawnFunc, this.jtree, 0, new THREE.Vector3(0,0,0));
+    spawnCubes(spawnFunc: (pos: THREE.Vector3, extent: number)=> void, offset: THREE.Vector3){
+        this.depthLoop(spawnFunc, this.jtree, 0, offset);
     }
 }
 

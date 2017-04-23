@@ -1,12 +1,19 @@
-default = "walk"
+default = "idle"
+size = 0.02
 
-[[animations.walk]]
-    size = 1
+[animation.idle]
+    speed = 1000
+    vox = [
+        "characters/player/chr_idle.vox"
+    ]
+
+[animation.walk]    
     speed = 100
     vox = [
-        "chr_walkcycle-00.vox",
-        "chr_walkcycle-02.vox",
-        "chr_walkcycle-03.vox",
-        "chr_walkcycle-04.vox",
-        "chr_walkcycle-05.vox"
+        "characters/player/chr_walkcycle-00.vox",
+        "characters/player/chr_walkcycle-01.vox",
+        "characters/player/chr_walkcycle-02.vox",
+        "characters/player/chr_walkcycle-03.vox",
+        "characters/player/chr_walkcycle-04.vox",
+        "characters/player/chr_walkcycle-05.vox"
     ]
