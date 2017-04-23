@@ -69,7 +69,7 @@ export default class VoxModel extends THREE.Object3D {
 
     async tick() {
         if(this.voxHolder.children[0])
-            this.voxHolder.remove(this.voxHolder[0]);
+            this.voxHolder.remove(this.voxHolder.children[0]);
 
         const voxList = this.animations[this.current].vox;
         const mesh = await voxList[this.frame];

@@ -279,7 +279,7 @@ var VoxModel = (function (_super) {
                 switch (_a.label) {
                     case 0:
                         if (this.voxHolder.children[0])
-                            this.voxHolder.remove(this.voxHolder[0]);
+                            this.voxHolder.remove(this.voxHolder.children[0]);
                         voxList = this.animations[this.current].vox;
                         return [4 /*yield*/, voxList[this.frame]];
                     case 1:
