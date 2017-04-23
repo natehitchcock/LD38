@@ -1,7 +1,7 @@
 default = "walk"
+size = 0.02
 
-[animation.walk]
-    size = 0.02
+[animation.walk]    
     speed = 100
     vox = [
         "characters/player/chr_walkcycle-00.vox",

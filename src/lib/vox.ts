@@ -5,31 +5,52 @@ declare const vox: any;
 
 const parser = new vox.Parser();
 
+interface IAnimation {
+    speed: number;
+    vox: string[];
+}
+
+interface IVoxData {
+    animation: {[key: string]: IAnimation};
+    size?: number;
+    rotation?: number[];
+    position?: number[];
+    default: string;
+}
+
 export default class VoxModel extends THREE.Object3D {
     data: any;
     animations: any;
     current: string;
     frame: number;
     timeout: number;
+    voxHolder: THREE.Object3D;
 
-    constructor(voxData: any) {
+    constructor(voxData: IVoxData) {
         super();
         this.data = voxData;
         const dir = './vox';
         this.animations = {};
 
         Object.keys(this.data.animation).forEach(key => {
-            const anim = this.data.animation[key];
+            const anim: IAnimation = this.data.animation[key];
 
             this.animations[key] = {
                 ...anim,
-                vox: anim.vox.map(file => parser.parse(path.join(dir, file)).then(voxelBin =>  {
-                    const builder = new vox.MeshBuilder(voxelBin, { voxelSize: anim.size });
+                vox: anim.vox.map(file => parser.parse(path.join(dir, file)).then(voxelBin => {
+                    const builder = new vox.MeshBuilder(voxelBin, { voxelSize: voxData.size });
                     return builder.createMesh();
                 })),
             };
         });
+        this.voxHolder = new THREE.Object3D();
+        if(voxData.position)
+            this.voxHolder.position.fromArray(voxData.position);
 
+        if(voxData.rotation)
+            this.voxHolder.rotation.fromArray(voxData.rotation.map(x => x * Math.PI/180));
+
+        this.add(this.voxHolder);
         this.play(this.data.default);
     }
 
@@ -47,12 +68,12 @@ export default class VoxModel extends THREE.Object3D {
     }
 
     async tick() {
-        if(this.children[0])
-            this.remove(this.children[0]);
+        if(this.voxHolder.children[0])
+            this.voxHolder.remove(this.voxHolder[0]);
 
         const voxList = this.animations[this.current].vox;
         const mesh = await voxList[this.frame];
-        this.add(mesh);
+        this.voxHolder.add(mesh);
 
         this.frame = this.frame + 1 === voxList.length ? this.frame = 0 : this.frame + 1;
     }

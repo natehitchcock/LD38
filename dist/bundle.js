@@ -249,10 +249,16 @@ var VoxModel = (function (_super) {
         Object.keys(_this.data.animation).forEach(function (key) {
             var anim = _this.data.animation[key];
             _this.animations[key] = __assign({}, anim, { vox: anim.vox.map(function (file) { return parser.parse(path.join(dir, file)).then(function (voxelBin) {
-                    var builder = new vox.MeshBuilder(voxelBin, { voxelSize: anim.size });
+                    var builder = new vox.MeshBuilder(voxelBin, { voxelSize: voxData.size });
                     return builder.createMesh();
                 }); }) });
         });
+        _this.voxHolder = new THREE.Object3D();
+        if (voxData.position)
+            _this.voxHolder.position.fromArray(voxData.position);
+        if (voxData.rotation)
+            _this.voxHolder.rotation.fromArray(voxData.rotation.map(function (x) { return x * Math.PI / 180; }));
+        _this.add(_this.voxHolder);
         _this.play(_this.data.default);
         return _this;
     }
@@ -272,13 +278,13 @@ var VoxModel = (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (this.children[0])
-                            this.remove(this.children[0]);
+                        if (this.voxHolder.children[0])
+                            this.voxHolder.remove(this.voxHolder[0]);
                         voxList = this.animations[this.current].vox;
                         return [4 /*yield*/, voxList[this.frame]];
                     case 1:
                         mesh = _a.sent();
-                        this.add(mesh);
+                        this.voxHolder.add(mesh);
                         this.frame = this.frame + 1 === voxList.length ? this.frame = 0 : this.frame + 1;
                         return [2 /*return*/];
                 }
@@ -299,7 +305,9 @@ exports.default = VoxModel;
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __webpack_require__(0);
 var input_1 = __webpack_require__(6);
+var vox_1 = __webpack_require__(2);
 var data = __webpack_require__(10);
+var weapon = __webpack_require__(11);
 var ThirdPersonController = (function () {
     function ThirdPersonController(cam, character, tree) {
         this.distance = new THREE.Vector3(data.distance.x, data.distance.y, data.distance.z);
@@ -307,6 +315,7 @@ var ThirdPersonController = (function () {
         this.cam = cam;
         this.speed = data.speed;
         this.character = character;
+        this.character.add(new vox_1.default(weapon));
     }
     ThirdPersonController.prototype.tick = function (delta) {
         var moveDelta = new THREE.Vector3(0, 0, 0);
@@ -333,9 +342,9 @@ exports.default = ThirdPersonController;
 
 module.exports    = {
 	"default": "walk",
+	"size": 0.02,
 	"animation": {
 		"walk": {
-			"size": 0.02,
 			"speed": 100,
 			"vox": [
 				"characters/player/chr_walkcycle-00.vox",
@@ -364,7 +373,7 @@ var charData = __webpack_require__(4);
 var character = new vox_1.default(charData);
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-var renderer = new THREE.WebGLRenderer();
+var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 var jtree = new JTreeEntity_1.default();
@@ -997,6 +1006,71 @@ module.exports    = {
 		"x": 0,
 		"y": 0,
 		"z": 1
+	}
+}
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+module.exports    = {
+	"type": "Ranged",
+	"default": "idle",
+	"size": 0.01,
+	"rotation": [
+		0,
+		-90,
+		0
+	],
+	"position": [
+		-0.08,
+		0.1,
+		0.1
+	],
+	"animation": {
+		"idle": {
+			"time": 100000,
+			"vox": [
+				"weapons/bolter.vox"
+			]
+		}
+	},
+	"weapon": {
+		"name": "Hulking Blaster",
+		"flavor_text": "...and they shall know no fear.",
+		"model": "bolter.vox"
+	},
+	"attack_info": {
+		"attach_point": "right hand",
+		"ammo": 40,
+		"attack_template": "square",
+		"projectile_spawn_location": 0,
+		"bullet_size": [
+			0.5,
+			0.5,
+			0.5
+		],
+		"attack_radius": [
+			1,
+			1,
+			1
+		],
+		"can_move": true,
+		"can_charge": true,
+		"invulnerable_during": false,
+		"terrain_destructor": true,
+		"projectile_dmg": 17.5,
+		"collision_dmg": 0,
+		"velocity": 60
+	},
+	"effects": {
+		"particle_effect": "laser",
+		"sfx_on_use": true,
+		"sfx": "Poww"
+	},
+	"timing": {
+		"telegraph_time": 0,
+		"attack_duration": 0.8
 	}
 }
 

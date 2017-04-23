@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 import {JoshuaTree} from './lib/joshuatree';
 import {keys, mouse} from './lib/input';
+import Vox from './lib/vox';
+
 const data = require('./content/character-controller.toml');
+const weapon = require('./content/weapons/bolter.toml');
 
 export default class ThirdPersonController {
     cam: THREE.Camera;
@@ -16,6 +19,7 @@ export default class ThirdPersonController {
         this.cam = cam;
         this.speed = data.speed;
         this.character = character;
+        this.character.add(new Vox(weapon));
     }
 
     tick(delta: number) {
