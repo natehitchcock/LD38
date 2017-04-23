@@ -13,18 +13,15 @@ let maxDepth = 3;
 export default class JTreeEntity extends THREE.Object3D{
     material: THREE.Material;
     mergedGeometry: THREE.Geometry;// for mesh combininb impl
-    baseBoxBGeometry: THREE.BoxBufferGeometry;// for ISM rendering impl
     jtree: JoshuaTree;
 
     constructor(material: THREE.Material){
         super();
 
         this.material = material;
-        this.baseBoxBGeometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
 
         // bind self to spawn functions, since they are passed around
         this.spawnMergeCubes = this.spawnMergeCubes.bind(this);
-        this.spawnISMCubes = this.spawnISMCubes.bind(this);
     }
 
     generateJTree(){
@@ -221,13 +218,6 @@ export default class JTreeEntity extends THREE.Object3D{
         this.mergedGeometry.merge(newGeometry,new THREE.Matrix4().makeTranslation(pos.x, pos.y, pos.z));
     }
 
-    spawnISMCubes(pos: THREE.Vector3, extent: number){
-        var newCube = new THREE.Mesh(this.baseBoxBGeometry, this.material);
-        newCube.position = pos;
-        newCube.scale.multiplyScalar(extent * 2);
-        this.add(newCube);
-    }
-
     spawnCubes(){
         this.mergedGeometry = new THREE.Geometry();
 
@@ -235,6 +225,37 @@ export default class JTreeEntity extends THREE.Object3D{
         
         let mergedMesh = new THREE.Mesh(this.mergedGeometry, this.material);
         this.add(mergedMesh);
+    }
+
+    calculateCenterOfMass(): THREE.Vector3{
+        let centerOfMass = new THREE.Vector3(0, 0, 0);
+        let totalMass = 0;
+        this.depthLoop((pos: THREE.Vector3, extent:number)=>{
+            // Calculate mass assuming uniform density
+            // [IDEA] give voxels non-uniform density values, 
+            //      and manipulate them when explosions 'n stuff happen
+            let density = 1;
+            let sideLen = extent * 2;
+            let volume = sideLen * sideLen * sideLen;
+            let mass = density * volume;
+
+            let weightedPos = new THREE.Vector3().copy(pos).multiplyScalar(mass);
+            centerOfMass.add(weightedPos);
+            totalMass += mass;
+        }, this.jtree, 0, this.position);
+
+        // normalize weights of vectors
+        centerOfMass.divideScalar(totalMass);
+
+        return centerOfMass;
+    }
+
+    detachSubtree(){
+        // [TODO] separate a subtree and return it
+        //      [ITR1] destroy the subtree
+        //      [ITR2] separate subtree, destroy it
+        //      [ITR3] separate subtree, give it a velocity and spin
+        //      [ITR4] separate subtree, fragment it (sub- separations)
     }
 }
 

@@ -38,7 +38,7 @@ let sphereCenter = new THREE.Vector3(80, 80, 80);
 let sphereRadius = 40;
 let jtree = new JTreeEntity(material);
 
-jtree.position.copy(new THREE.Vector3(0, 0, 0));
+jtree.position.copy(new THREE.Vector3(-80, -122, -80));
 jtree.generateJTreeSphere(sphereCenter, sphereRadius);
 jtree.spawnCubes();
 
@@ -50,6 +50,9 @@ if(debugControls){
     controls = new ThirdPersonController(camera, character);
     scene.add(character);
 }
+
+let jtreeCoM = jtree.calculateCenterOfMass();
+console.log('center of mass is ' + jtreeCoM.x + ', ' + jtreeCoM.y + ', ' + jtreeCoM.z);
 
 //scene.add(new Vox(testLevel));
 scene.add(jtree);
