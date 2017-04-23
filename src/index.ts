@@ -5,6 +5,8 @@ import * as THREE from 'three';
 import Vox from './o3d/vox';
 import {keys, mouse} from './lib/input';
 
+const gameConfig = require('./content/game.toml');
+
 interface IGameWindow extends Window {
     scene: THREE.Scene;
 }
@@ -45,10 +47,10 @@ jtree.generateJTreeSphere(sphereCenter, sphereRadius);
 console.log('generating and combining meshes...');
 jtree.spawnCubes();
 
-const debugControls = true;
-if(debugControls) {
+
+if(gameConfig.debug_controls) {
     flyControls = new FlyCharacter(camera);
-}else{
+} else {
     const character = new Vox(charData);
     controls = new ThirdPersonController(camera, character);
     scene.add(character);
@@ -66,7 +68,7 @@ const direction = 1;
 const render = () => {
     requestAnimationFrame(render);
 
-    if(debugControls) {
+    if(gameConfig.debug_controls) {
         flyControls.update(clock);
     }else {
         const delta = clock.getDelta();

@@ -33,7 +33,7 @@ export default class Weapon extends Vox {
         shell.copy(this.ammo);
         shell.position.copy(this.parent.position);
         shell.rotation.copy(this.parent.rotation);
-        shell.rotation.y += (Math.random() - 0.5) * this.data.ammo.spread;
+        shell.position.y += (Math.random() - 0.5) * this.data.ammo.spread;
         this.spawned.push(shell);
 
         (window as any).scene.add(shell);
