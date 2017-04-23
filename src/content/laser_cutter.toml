@@ -4,6 +4,7 @@ type = 'Ranged'
 [weapon]
 name = 'Laser'
 flavor_text = 'I couldnt come up with anything clever to go here'
+mesh = 'laser_cutter.vox'
 
 #Technical Specifications
 

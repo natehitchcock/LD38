@@ -4,6 +4,7 @@ type = 'Ranged'
 [weapon]
 name = 'Tangentializer'
 flavor_text = 'What were we doing?'
+mesh = ''
 
 #Technical Specifications
 [attack_info]

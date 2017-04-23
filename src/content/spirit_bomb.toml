@@ -4,6 +4,7 @@ type = 'Ranged'
 [weapon]
 name = 'Healthy Ball'
 flavor_text = 'It makes more sense in English'
+mesh = ''
 
 #Technical Specifications
 [attack_info]

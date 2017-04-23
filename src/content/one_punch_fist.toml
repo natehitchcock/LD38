@@ -4,6 +4,7 @@ type = 'Melee/Ranged'
 [weapon]
 name = 'One Punch Fist'
 flavor_text = 'One Serious Punch'
+mesh = 'one_punch_fist.vox'
 
 #Technical Specifications
 [attack_info]
