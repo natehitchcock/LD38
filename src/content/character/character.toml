@@ -1,5 +1,11 @@
-default = "walk"
+default = "idle"
 size = 0.02
+
+[animation.idle]
+    speed = 1000
+    vox = [
+        "characters/player/chr_idle.vox"
+    ]
 
 [animation.walk]    
     speed = 100

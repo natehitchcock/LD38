@@ -327,6 +327,13 @@ var ThirdPersonController = (function () {
             moveDelta.setX(-1);
         if (input_1.keys.a)
             moveDelta.setX(1);
+        var moved = moveDelta.x || moveDelta.z || moveDelta.y;
+        if (moved && this.character.current === 'idle') {
+            this.character.play('walk');
+        }
+        if (!moved && this.character.current === 'walk') {
+            this.character.play('idle');
+        }
         this.character.position.add(moveDelta.multiplyScalar(this.speed * delta));
         this.cam.position.lerp(this.character.position.clone().add(this.distance), data.lerp);
         this.cam.lookAt(this.character.position.clone().add(this.targetOffset));
@@ -341,9 +348,15 @@ exports.default = ThirdPersonController;
 /***/ (function(module, exports) {
 
 module.exports    = {
-	"default": "walk",
+	"default": "idle",
 	"size": 0.02,
 	"animation": {
+		"idle": {
+			"speed": 1000,
+			"vox": [
+				"characters/player/chr_idle.vox"
+			]
+		},
 		"walk": {
 			"speed": 100,
 			"vox": [
