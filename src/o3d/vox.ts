@@ -5,12 +5,12 @@ declare const vox: any;
 
 const parser = new vox.Parser();
 
-interface IAnimation {
+export interface IAnimation {
     speed: number;
     vox: string[];
 }
 
-interface IVoxData {
+export interface IVoxData {
     animation: {[key: string]: IAnimation};
     size?: number;
     rotation?: number[];
@@ -19,7 +19,7 @@ interface IVoxData {
 }
 
 export default class VoxModel extends THREE.Object3D {
-    data: any;
+    data: IVoxData;
     animations: any;
     current: string;
     frame: number;
@@ -60,14 +60,14 @@ export default class VoxModel extends THREE.Object3D {
         this.current = animation;
         this.frame = 0;
 
-        this.timeout = setInterval(this.tick.bind(this), this.animations[animation].speed);
+        this.timeout = setInterval(this.step.bind(this), this.animations[animation].speed);
     }
 
     stop() {
         clearTimeout(this.timeout);
     }
 
-    async tick() {
+    async step() {
         if(this.voxHolder.children[0])
             this.voxHolder.remove(this.voxHolder.children[0]);
 

@@ -1,0 +1,8 @@
+default = "idle"
+size = 0.02
+
+[animation.idle]
+    speed = 1000
+    vox = [
+        "ammo/charged_shell.vox"
+    ]

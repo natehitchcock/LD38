@@ -1,29 +1,71 @@
 import * as THREE from 'three';
 import {JoshuaTree} from './lib/joshuatree';
 import {keys, mouse} from './lib/input';
-import Vox from './lib/vox';
+import Vox from './o3d/vox';
 
-const data = require('./content/character-controller.toml');
+const data: IControllerData = require('./content/character-controller.toml');
 const weapon = require('./content/weapons/bolter.toml');
+
+interface IControllerData {
+    movement: {
+        speed: number;
+        turn: number;
+    };
+
+    camera: {
+        lerp: number;
+
+        distance: {
+            x: number;
+            y: number;
+            z: number;
+        };
+
+        offset: {
+            x: number;
+            y: number;
+            z: number;
+        };
+    };
+
+
+}
 
 export default class ThirdPersonController {
     cam: THREE.Camera;
     character: Vox;
+    targeter: THREE.Vector3;
     distance: THREE.Vector3;
-    speed: number;
     targetOffset: THREE.Vector3;
 
     constructor(cam: THREE.Camera, character: Vox, tree: JoshuaTree) {
-        this.distance = new THREE.Vector3(data.distance.x, data.distance.y, data.distance.z);
-        this.targetOffset = new THREE.Vector3(data.offset.x, data.offset.y, data.offset.z);
+        this.distance = new THREE.Vector3(data.camera.distance.x, data.camera.distance.y, data.camera.distance.z);
+        this.targetOffset = new THREE.Vector3(data.camera.offset.x, data.camera.offset.y, data.camera.offset.z);
         this.cam = cam;
-        this.speed = data.speed;
+        this.targeter = new THREE.Vector3();
         this.character = character;
         this.character.add(new Vox(weapon));
     }
 
     tick(delta: number) {
         const moveDelta = new THREE.Vector3(0, 0, 0);
+
+        const faceTo = new THREE.Vector3(
+            this.character.position.x + -2 * mouse.xp,
+            this.character.position.y,
+            this.character.position.z + -2 * mouse.yp,
+        );
+
+        this.targeter.lerp(faceTo, data.movement.turn);
+        this.character.lookAt(this.targeter);
+        /*
+        let yRot = 0;
+
+        if(Math.abs(mouse.xp) > data.mouse.radius) {
+           yRot = mouse.xp * data.mouse.turnSpeed * delta;
+        }
+          this.character.rotateY(yRot);
+        */
 
         if(keys.w) moveDelta.setZ(1);
         if(keys.s) moveDelta.setZ(-1);
@@ -39,9 +81,8 @@ export default class ThirdPersonController {
             this.character.play('idle');
         }
 
-        this.character.position.add(moveDelta.multiplyScalar(this.speed * delta));
-
-        this.cam.position.lerp(this.character.position.clone().add(this.distance), data.lerp);
+        this.character.position.add(moveDelta.multiplyScalar(data.movement.speed * delta));
+        this.cam.position.lerp(this.character.position.clone().add(this.distance), data.camera.lerp);
         this.cam.lookAt(this.character.position.clone().add(this.targetOffset));
     }
 }

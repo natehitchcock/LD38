@@ -1,7 +1,7 @@
 import JTreeEntity from './JTreeEntity';
 import ThirdPersonController from './thirdpersoncontroller';
 import * as THREE from 'three';
-import Vox from './lib/vox';
+import Vox from './o3d/vox';
 
 const charData = require('./content/character/character.toml');
 

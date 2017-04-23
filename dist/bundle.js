@@ -177,126 +177,7 @@ exports.default = JTreeEntity;
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
-    return { next: verb(0), "throw": verb(1), "return": verb(2) };
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var path = __webpack_require__(8);
-var THREE = __webpack_require__(0);
-var parser = new vox.Parser();
-var VoxModel = (function (_super) {
-    __extends(VoxModel, _super);
-    function VoxModel(voxData) {
-        var _this = _super.call(this) || this;
-        _this.data = voxData;
-        var dir = './vox';
-        _this.animations = {};
-        Object.keys(_this.data.animation).forEach(function (key) {
-            var anim = _this.data.animation[key];
-            _this.animations[key] = __assign({}, anim, { vox: anim.vox.map(function (file) { return parser.parse(path.join(dir, file)).then(function (voxelBin) {
-                    var builder = new vox.MeshBuilder(voxelBin, { voxelSize: voxData.size });
-                    return builder.createMesh();
-                }); }) });
-        });
-        _this.voxHolder = new THREE.Object3D();
-        if (voxData.position)
-            _this.voxHolder.position.fromArray(voxData.position);
-        if (voxData.rotation)
-            _this.voxHolder.rotation.fromArray(voxData.rotation.map(function (x) { return x * Math.PI / 180; }));
-        _this.add(_this.voxHolder);
-        _this.play(_this.data.default);
-        return _this;
-    }
-    VoxModel.prototype.play = function (animation) {
-        if (this.timeout)
-            clearInterval(this.timeout);
-        this.current = animation;
-        this.frame = 0;
-        this.timeout = setInterval(this.tick.bind(this), this.animations[animation].speed);
-    };
-    VoxModel.prototype.stop = function () {
-        clearTimeout(this.timeout);
-    };
-    VoxModel.prototype.tick = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var voxList, mesh;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (this.voxHolder.children[0])
-                            this.voxHolder.remove(this.voxHolder.children[0]);
-                        voxList = this.animations[this.current].vox;
-                        return [4 /*yield*/, voxList[this.frame]];
-                    case 1:
-                        mesh = _a.sent();
-                        this.voxHolder.add(mesh);
-                        this.frame = this.frame + 1 === voxList.length ? this.frame = 0 : this.frame + 1;
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    return VoxModel;
-}(THREE.Object3D));
-exports.default = VoxModel;
-
-
-/***/ }),
+/* 2 */,
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -305,20 +186,31 @@ exports.default = VoxModel;
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = __webpack_require__(0);
 var input_1 = __webpack_require__(6);
-var vox_1 = __webpack_require__(2);
+var vox_1 = __webpack_require__(12);
 var data = __webpack_require__(10);
 var weapon = __webpack_require__(11);
 var ThirdPersonController = (function () {
     function ThirdPersonController(cam, character, tree) {
-        this.distance = new THREE.Vector3(data.distance.x, data.distance.y, data.distance.z);
-        this.targetOffset = new THREE.Vector3(data.offset.x, data.offset.y, data.offset.z);
+        this.distance = new THREE.Vector3(data.camera.distance.x, data.camera.distance.y, data.camera.distance.z);
+        this.targetOffset = new THREE.Vector3(data.camera.offset.x, data.camera.offset.y, data.camera.offset.z);
         this.cam = cam;
-        this.speed = data.speed;
+        this.targeter = new THREE.Vector3();
         this.character = character;
         this.character.add(new vox_1.default(weapon));
     }
     ThirdPersonController.prototype.tick = function (delta) {
         var moveDelta = new THREE.Vector3(0, 0, 0);
+        var faceTo = new THREE.Vector3(this.character.position.x + -2 * input_1.mouse.xp, this.character.position.y, this.character.position.z + -2 * input_1.mouse.yp);
+        this.targeter.lerp(faceTo, data.movement.turn);
+        this.character.lookAt(this.targeter);
+        /*
+        let yRot = 0;
+
+        if(Math.abs(mouse.xp) > data.mouse.radius) {
+           yRot = mouse.xp * data.mouse.turnSpeed * delta;
+        }
+          this.character.rotateY(yRot);
+        */
         if (input_1.keys.w)
             moveDelta.setZ(1);
         if (input_1.keys.s)
@@ -334,8 +226,8 @@ var ThirdPersonController = (function () {
         if (!moved && this.character.current === 'walk') {
             this.character.play('idle');
         }
-        this.character.position.add(moveDelta.multiplyScalar(this.speed * delta));
-        this.cam.position.lerp(this.character.position.clone().add(this.distance), data.lerp);
+        this.character.position.add(moveDelta.multiplyScalar(data.movement.speed * delta));
+        this.cam.position.lerp(this.character.position.clone().add(this.distance), data.camera.lerp);
         this.cam.lookAt(this.character.position.clone().add(this.targetOffset));
     };
     return ThirdPersonController;
@@ -381,7 +273,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var JTreeEntity_1 = __webpack_require__(1);
 var thirdpersoncontroller_1 = __webpack_require__(3);
 var THREE = __webpack_require__(0);
-var vox_1 = __webpack_require__(2);
+var vox_1 = __webpack_require__(12);
 var charData = __webpack_require__(4);
 var character = new vox_1.default(charData);
 var scene = new THREE.Scene();
@@ -435,6 +327,10 @@ document.addEventListener('keydown', function (e) {
 document.addEventListener('mousemove', function (e) {
     exports.mouse.x = e.clientX;
     exports.mouse.y = e.clientY;
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    exports.mouse.xp = exports.mouse.x / w - .5;
+    exports.mouse.yp = exports.mouse.y / h - .5;
 });
 document.addEventListener('mousedown', function (e) {
     exports.mouse.left = true;
@@ -446,6 +342,8 @@ exports.keys = {};
 exports.mouse = {
     x: 0,
     y: 0,
+    xp: 0,
+    yp: 0,
     left: false,
     right: false,
 };
@@ -1008,17 +906,22 @@ process.umask = function() { return 0; };
 /***/ (function(module, exports) {
 
 module.exports    = {
-	"speed": 2,
-	"lerp": 0.5,
-	"distance": {
-		"x": 0,
-		"y": 1.2,
-		"z": -0.7
+	"movement": {
+		"speed": 2,
+		"turn": 0.2
 	},
-	"offset": {
-		"x": 0,
-		"y": 0,
-		"z": 1
+	"camera": {
+		"lerp": 0.5,
+		"distance": {
+			"x": 0,
+			"y": 2,
+			"z": -0.7
+		},
+		"offset": {
+			"x": 0,
+			"y": 0,
+			"z": 0.5
+		}
 	}
 }
 
@@ -1048,10 +951,24 @@ module.exports    = {
 			]
 		}
 	},
+	"ammo": {
+		"default": "idle",
+		"size": 0.02,
+		"speed": 1,
+		"ttl": 1000,
+		"rate": 100,
+		"animation": {
+			"idle": {
+				"speed": 1000,
+				"vox": [
+					"ammo/charged_shell.vox"
+				]
+			}
+		}
+	},
 	"weapon": {
 		"name": "Hulking Blaster",
-		"flavor_text": "...and they shall know no fear.",
-		"model": "bolter.vox"
+		"flavor_text": "...and they shall know no fear."
 	},
 	"attack_info": {
 		"attach_point": "right hand",
@@ -1086,6 +1003,126 @@ module.exports    = {
 		"attack_duration": 0.8
 	}
 }
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
+    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var path = __webpack_require__(8);
+var THREE = __webpack_require__(0);
+var parser = new vox.Parser();
+var VoxModel = (function (_super) {
+    __extends(VoxModel, _super);
+    function VoxModel(voxData) {
+        var _this = _super.call(this) || this;
+        _this.data = voxData;
+        var dir = './vox';
+        _this.animations = {};
+        Object.keys(_this.data.animation).forEach(function (key) {
+            var anim = _this.data.animation[key];
+            _this.animations[key] = __assign({}, anim, { vox: anim.vox.map(function (file) { return parser.parse(path.join(dir, file)).then(function (voxelBin) {
+                    var builder = new vox.MeshBuilder(voxelBin, { voxelSize: voxData.size });
+                    return builder.createMesh();
+                }); }) });
+        });
+        _this.voxHolder = new THREE.Object3D();
+        if (voxData.position)
+            _this.voxHolder.position.fromArray(voxData.position);
+        if (voxData.rotation)
+            _this.voxHolder.rotation.fromArray(voxData.rotation.map(function (x) { return x * Math.PI / 180; }));
+        _this.add(_this.voxHolder);
+        _this.play(_this.data.default);
+        return _this;
+    }
+    VoxModel.prototype.play = function (animation) {
+        if (this.timeout)
+            clearInterval(this.timeout);
+        this.current = animation;
+        this.frame = 0;
+        this.timeout = setInterval(this.step.bind(this), this.animations[animation].speed);
+    };
+    VoxModel.prototype.stop = function () {
+        clearTimeout(this.timeout);
+    };
+    VoxModel.prototype.step = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var voxList, mesh;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.voxHolder.children[0])
+                            this.voxHolder.remove(this.voxHolder.children[0]);
+                        voxList = this.animations[this.current].vox;
+                        return [4 /*yield*/, voxList[this.frame]];
+                    case 1:
+                        mesh = _a.sent();
+                        this.voxHolder.add(mesh);
+                        this.frame = this.frame + 1 === voxList.length ? this.frame = 0 : this.frame + 1;
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return VoxModel;
+}(THREE.Object3D));
+exports.default = VoxModel;
+
 
 /***/ })
 /******/ ]);
