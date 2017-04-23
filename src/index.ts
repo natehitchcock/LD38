@@ -34,16 +34,18 @@ const uniforms = {
 
 const material = new THREE.MeshPhongMaterial( {color: 0xA0522D} );
 
-let sphereCenter = new THREE.Vector3(80, 80, 80);
-let sphereRadius = 40;
-let jtree = new JTreeEntity(material);
+const sphereCenter = new THREE.Vector3(80, 80, 80);
+const sphereRadius = 40;
+const jtree = new JTreeEntity(material);
 
 jtree.position.copy(new THREE.Vector3(-80, -122, -80));
+console.log('generating jtree sphere shape...');
 jtree.generateJTreeSphere(sphereCenter, sphereRadius);
+console.log('generating and combining meshes...');
 jtree.spawnCubes();
 
-let debugControls = true;
-if(debugControls){
+const debugControls = true;
+if(debugControls) {
     flyControls = new FlyCharacter(camera);
 }else{
     const character = new Vox(charData);
@@ -51,10 +53,9 @@ if(debugControls){
     scene.add(character);
 }
 
-let jtreeCoM = jtree.calculateCenterOfMass();
+const jtreeCoM = jtree.calculateCenterOfMass();
 console.log('center of mass is ' + jtreeCoM.x + ', ' + jtreeCoM.y + ', ' + jtreeCoM.z);
 
-//scene.add(new Vox(testLevel));
 scene.add(jtree);
 scene.add(new THREE.DirectionalLight());
 scene.add(new THREE.AmbientLight());
@@ -63,14 +64,14 @@ const direction = 1;
 
 const render = () => {
     requestAnimationFrame(render);
-    
-    if(debugControls){
+
+    if(debugControls) {
         flyControls.update(clock);
-    }else{
+    }else {
         const delta = clock.getDelta();
         controls.tick(delta);
     }
-    
+
     renderer.render(scene, camera);
 };
 
