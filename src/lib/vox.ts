@@ -50,7 +50,10 @@ export default class VoxModel extends THREE.Object3D {
         if(this.children[0])
             this.remove(this.children[0]);
 
-        const mesh = await this.animations[this.current].vox[this.frame];
+        const voxList = this.animations[this.current].vox;
+        const mesh = await voxList[this.frame];
         this.add(mesh);
+
+        this.frame = this.frame + 1 === voxList.length ? this.frame = 0 : this.frame + 1;
     }
 }

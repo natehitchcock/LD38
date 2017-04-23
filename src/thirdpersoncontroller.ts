@@ -6,7 +6,7 @@ const data = require('./content/character-controller.toml');
 export default class ThirdPersonController {
     cam: THREE.Camera;
     character: THREE.Object3D;
-    distance: THREE.Vector3; 
+    distance: THREE.Vector3;
     speed: number;
     targetOffset: THREE.Vector3;
 
@@ -20,14 +20,14 @@ export default class ThirdPersonController {
 
     tick(delta: number) {
         const moveDelta = new THREE.Vector3(0, 0, 0);
-        
+
         if(keys.w) moveDelta.setZ(1);
         if(keys.s) moveDelta.setZ(-1);
         if(keys.d) moveDelta.setX(-1);
-        if(keys.a) moveDelta.setX(1);    
-        
+        if(keys.a) moveDelta.setX(1);
+
         this.character.position.add(moveDelta.multiplyScalar(this.speed * delta));
-       
+
         this.cam.position.lerp(this.character.position.clone().add(this.distance), data.lerp);
         this.cam.lookAt(this.character.position.clone().add(this.targetOffset));
     }

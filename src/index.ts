@@ -41,6 +41,7 @@ const direction = 1;
 
 const render = () => {
     const delta = clock.getDelta();
+
     requestAnimationFrame(render);
     controls.tick(delta);
 

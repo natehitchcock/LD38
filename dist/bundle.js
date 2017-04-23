@@ -268,16 +268,18 @@ var VoxModel = (function (_super) {
     };
     VoxModel.prototype.tick = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var mesh;
+            var voxList, mesh;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (this.children[0])
                             this.remove(this.children[0]);
-                        return [4 /*yield*/, this.animations[this.current].vox[this.frame]];
+                        voxList = this.animations[this.current].vox;
+                        return [4 /*yield*/, voxList[this.frame]];
                     case 1:
                         mesh = _a.sent();
                         this.add(mesh);
+                        this.frame = this.frame + 1 === voxList.length ? this.frame = 0 : this.frame + 1;
                         return [2 /*return*/];
                 }
             });
