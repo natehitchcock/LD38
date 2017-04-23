@@ -5,14 +5,27 @@ let maxNum: Uint64 = new Uint64([0xFFFFFFFF, 0xFFFFFFFF]);
 let zeroNum: Uint64 = new Uint64([0, 0]);
 let highBit: number = 0x800000;
 
-
 let maxDepth = 3;
 
 // [TODO] refactor jtree to use RTT to detect leaf nodes instead of max depth
 // [TODO] add defines for common 64 bit ints to Uint64
 
-export default class JTreeEntity{
+export default class JTreeEntity extends THREE.Object3D{
+    material: THREE.Material;
+    mergedGeometry: THREE.Geometry;// for mesh combininb impl
+    baseBoxBGeometry: THREE.BoxBufferGeometry;// for ISM rendering impl
     jtree: JoshuaTree;
+
+    constructor(material: THREE.Material){
+        super();
+
+        this.material = material;
+        this.baseBoxBGeometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+
+        // bind self to spawn functions, since they are passed around
+        this.spawnMergeCubes = this.spawnMergeCubes.bind(this);
+        this.spawnISMCubes = this.spawnISMCubes.bind(this);
+    }
 
     generateJTree(){
         this.jtree = new JoshuaTree();
@@ -194,7 +207,7 @@ export default class JTreeEntity{
                     if(child instanceof JoshuaTree) {
                         let toff = new THREE.Vector3().copy(offset);
                         let keynum = parseInt(childKey);
-                        console.log(childKey);
+                        //console.log(childKey);
                         this.depthLoop(fn, child, depth + 1,
                          toff.add(this.indexToScaledRelativePosition(keynum, depth))); 
                     }    
@@ -203,8 +216,25 @@ export default class JTreeEntity{
         }
     }
 
-    spawnCubes(spawnFunc: (pos: THREE.Vector3, extent: number)=> void, offset: THREE.Vector3){
-        this.depthLoop(spawnFunc, this.jtree, 0, offset);
+    spawnMergeCubes(pos: THREE.Vector3, extent: number){
+        var newGeometry = new THREE.BoxGeometry( extent * 2, extent * 2, extent * 2);
+        this.mergedGeometry.merge(newGeometry,new THREE.Matrix4().makeTranslation(pos.x, pos.y, pos.z));
+    }
+
+    spawnISMCubes(pos: THREE.Vector3, extent: number){
+        var newCube = new THREE.Mesh(this.baseBoxBGeometry, this.material);
+        newCube.position = pos;
+        newCube.scale.multiplyScalar(extent * 2);
+        this.add(newCube);
+    }
+
+    spawnCubes(){
+        this.mergedGeometry = new THREE.Geometry();
+
+        this.depthLoop(this.spawnMergeCubes, this.jtree, 0, new THREE.Vector3(0, 0, 0));
+        
+        let mergedMesh = new THREE.Mesh(this.mergedGeometry, this.material);
+        this.add(mergedMesh);
     }
 }
 
