@@ -336,11 +336,12 @@ module.exports    = {
 			"size": 0.02,
 			"speed": 100,
 			"vox": [
-				"chr_walkcycle-00.vox",
-				"chr_walkcycle-02.vox",
-				"chr_walkcycle-03.vox",
-				"chr_walkcycle-04.vox",
-				"chr_walkcycle-05.vox"
+				"characters/player/chr_walkcycle-00.vox",
+				"characters/player/chr_walkcycle-01.vox",
+				"characters/player/chr_walkcycle-02.vox",
+				"characters/player/chr_walkcycle-03.vox",
+				"characters/player/chr_walkcycle-04.vox",
+				"characters/player/chr_walkcycle-05.vox"
 			]
 		}
 	}
@@ -987,8 +988,8 @@ module.exports    = {
 	"lerp": 0.5,
 	"distance": {
 		"x": 0,
-		"y": 2,
-		"z": -0.5
+		"y": 1.2,
+		"z": -0.7
 	},
 	"offset": {
 		"x": 0,
