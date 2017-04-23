@@ -3,9 +3,10 @@ type = 'Ranged'
 #Weapon Details
 [weapon]
 name = 'Laser'
-flavor_text = 'I couldnt come up with anything clever to go here"
+flavor_text = 'I couldnt come up with anything clever to go here'
 
 #Technical Specifications
+
 [attack_info]
 attach_point = 'right hand'
 ammo = 100 #if laser beam, then -5 ammo. If held down, then -1 every 1.47 seconds
