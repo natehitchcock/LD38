@@ -19,9 +19,9 @@ var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeig
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
-
+let jtree = new JTreeEntity();
 const character = new THREE.Object3D();
-let controls = new ThirdPersonController(camera, character);
+let controls = new ThirdPersonController(camera, character, jtree.jtree);
 let clock = new THREE.Clock();
 
 camera.position.z = 5;
@@ -32,7 +32,7 @@ let uniforms = {
 
 var material = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
 
-let jtree = new JTreeEntity();
+
 jtree.generateJTree();
 jtree.spawnCubes(pos =>{    
     var cube = new THREE.Mesh( geometry, material );

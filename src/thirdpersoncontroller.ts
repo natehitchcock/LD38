@@ -1,16 +1,20 @@
 import * as THREE from 'three';
+import {JoshuaTree} from './lib/joshuatree';
 import {keys, mouse} from './lib/input';
+const data = require('./content/character-controller.toml');
 
 export default class ThirdPersonController {
     cam: THREE.Camera;
     character: THREE.Object3D;
     distance: THREE.Vector3; 
     speed: number;
+    targetOffset: THREE.Vector3;
 
-    constructor(cam: THREE.Camera, character: THREE.Object3D) {
-        this.distance = new THREE.Vector3(0, 1, -0.5);
+    constructor(cam: THREE.Camera, character: THREE.Object3D, tree: JoshuaTree) {
+        this.distance = new THREE.Vector3(data.distance.x, data.distance.y, data.distance.z);
+        this.targetOffset = new THREE.Vector3(data.offset.x, data.offset.y, data.offset.z);
         this.cam = cam;
-        this.speed = 2;
+        this.speed = data.speed;
         this.character = character;
     }
 
@@ -24,9 +28,7 @@ export default class ThirdPersonController {
         
         this.character.position.add(moveDelta.multiplyScalar(this.speed * delta));
        
-        this.cam.position.lerp(this.character.position.clone().add(this.distance), .4);
-        this.cam.lookAt(this.character.position);
-        
+        this.cam.position.lerp(this.character.position.clone().add(this.distance), data.lerp);
+        this.cam.lookAt(this.character.position.clone().add(this.targetOffset));
     }
-
 }

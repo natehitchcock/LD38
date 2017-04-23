@@ -73,8 +73,7 @@
 module.exports = THREE;
 
 /***/ }),
-/* 1 */,
-/* 2 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -178,14 +177,51 @@ exports.default = JTreeEntity;
 
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var THREE = __webpack_require__(0);
+var input_1 = __webpack_require__(4);
+var data = __webpack_require__(6);
+var ThirdPersonController = (function () {
+    function ThirdPersonController(cam, character, tree) {
+        this.distance = new THREE.Vector3(data.distance.x, data.distance.y, data.distance.z);
+        this.targetOffset = new THREE.Vector3(data.offset.x, data.offset.y, data.offset.z);
+        this.cam = cam;
+        this.speed = data.speed;
+        this.character = character;
+    }
+    ThirdPersonController.prototype.tick = function (delta) {
+        var moveDelta = new THREE.Vector3(0, 0, 0);
+        if (input_1.keys.w)
+            moveDelta.setZ(1);
+        if (input_1.keys.s)
+            moveDelta.setZ(-1);
+        if (input_1.keys.d)
+            moveDelta.setX(-1);
+        if (input_1.keys.a)
+            moveDelta.setX(1);
+        this.character.position.add(moveDelta.multiplyScalar(this.speed * delta));
+        this.cam.position.lerp(this.character.position.clone().add(this.distance), data.lerp);
+        this.cam.lookAt(this.character.position.clone().add(this.targetOffset));
+    };
+    return ThirdPersonController;
+}());
+exports.default = ThirdPersonController;
+
+
+/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var JTreeEntity_1 = __webpack_require__(2);
-var thirdpersoncontroller_1 = __webpack_require__(6);
+var JTreeEntity_1 = __webpack_require__(1);
+var thirdpersoncontroller_1 = __webpack_require__(2);
 var THREE = __webpack_require__(0);
 var parser = new vox.Parser();
 parser.parse("./vox/chr_walkcycle-00.vox").then(function (voxelData) {
@@ -199,8 +235,9 @@ var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHei
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+var jtree = new JTreeEntity_1.default();
 var character = new THREE.Object3D();
-var controls = new thirdpersoncontroller_1.default(camera, character);
+var controls = new thirdpersoncontroller_1.default(camera, character, jtree.jtree);
 var clock = new THREE.Clock();
 camera.position.z = 5;
 var geometry = new THREE.BoxBufferGeometry(1, 1, 1);
@@ -208,7 +245,6 @@ var uniforms = {
     color: { value: new THREE.Vector4(0, 1, 0, 1) }
 };
 var material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-var jtree = new JTreeEntity_1.default();
 jtree.generateJTree();
 jtree.spawnCubes(function (pos) {
     var cube = new THREE.Mesh(geometry, material);
@@ -400,38 +436,22 @@ exports.JoshuaTree = JoshuaTree;
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var THREE = __webpack_require__(0);
-var input_1 = __webpack_require__(4);
-var ThirdPersonController = (function () {
-    function ThirdPersonController(cam, character) {
-        this.distance = new THREE.Vector3(0, 1, -0.5);
-        this.cam = cam;
-        this.speed = 2;
-        this.character = character;
-    }
-    ThirdPersonController.prototype.tick = function (delta) {
-        var moveDelta = new THREE.Vector3(0, 0, 0);
-        if (input_1.keys.w)
-            moveDelta.setZ(1);
-        if (input_1.keys.s)
-            moveDelta.setZ(-1);
-        if (input_1.keys.d)
-            moveDelta.setX(-1);
-        if (input_1.keys.a)
-            moveDelta.setX(1);
-        this.character.position.add(moveDelta.multiplyScalar(this.speed * delta));
-        this.cam.position.lerp(this.character.position.clone().add(this.distance), .4);
-        this.cam.lookAt(this.character.position);
-    };
-    return ThirdPersonController;
-}());
-exports.default = ThirdPersonController;
-
+module.exports    = {
+	"speed": 2,
+	"lerp": 0.5,
+	"distance": {
+		"x": 0,
+		"y": 2,
+		"z": -0.5
+	},
+	"offset": {
+		"x": 0,
+		"y": 0,
+		"z": 1
+	}
+}
 
 /***/ })
 /******/ ]);
