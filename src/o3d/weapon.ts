@@ -1,34 +1,51 @@
 import Vox, {IAnimation, IVoxData} from './vox';
+import * as THREE from 'three';
 
 interface IAmmoData extends IVoxData {
     speed: number;
     ttl: number;
     rate: number;
+    spread: number;
 }
 
 interface IWeaponData extends IVoxData {
     ammo: IAmmoData;
 }
 
-class Weapon extends Vox {
+
+
+export default class Weapon extends Vox {
     data: IWeaponData;
     ammo: Vox;
     spawned: THREE.Object3D[];
     count: number;
+    clock: THREE.Clock;
 
     constructor(data: IWeaponData) {
         super(data);
         this.ammo = new Vox(this.data.ammo);
         this.spawned = [];
+        this.clock = new THREE.Clock();
+
+        this.tick();
     }
 
     fire() {
-        this.parent.add(this.ammo.clone());
+        const shell = new THREE.Object3D();
+        shell.copy(this.ammo);
+        shell.position.copy(this.position);
+        shell.rotation.copy(this.rotation);
+        shell.rotation.y += (Math.random() - 0.5) * this.data.ammo.spread;
+        this.spawned.push(shell);
+        this.parent.add(shell);
     }
 
-    tick(delta: number) {
-        this.count += delta;
+    tick() {
+        const delta = this.clock.getDelta();
+        this.spawned.forEach(shell => {
+            shell.translateZ(this.data.ammo.speed * delta);
+        });
 
-
+        requestAnimationFrame(this.tick.bind(this));
     }
 }

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {JoshuaTree} from './lib/joshuatree';
 import {keys, mouse} from './lib/input';
 import Vox from './o3d/vox';
+import Weapon from './o3d/weapon';
 
 const data: IControllerData = require('./content/character-controller.toml');
 const weapon = require('./content/weapons/bolter.toml');
@@ -37,14 +38,16 @@ export default class ThirdPersonController {
     targeter: THREE.Vector3;
     distance: THREE.Vector3;
     targetOffset: THREE.Vector3;
+    weapon: Weapon;
 
-    constructor(cam: THREE.Camera, character: Vox, tree: JoshuaTree) {
+    constructor(cam: THREE.Camera, character: Vox) {
         this.distance = new THREE.Vector3(data.camera.distance.x, data.camera.distance.y, data.camera.distance.z);
         this.targetOffset = new THREE.Vector3(data.camera.offset.x, data.camera.offset.y, data.camera.offset.z);
         this.cam = cam;
         this.targeter = new THREE.Vector3();
         this.character = character;
-        this.character.add(new Vox(weapon));
+        this.weapon = new Weapon(weapon);
+        this.character.add(this.weapon);
     }
 
     tick(delta: number) {
@@ -58,6 +61,10 @@ export default class ThirdPersonController {
 
         this.targeter.lerp(faceTo, data.movement.turn);
         this.character.lookAt(this.targeter);
+
+        if(mouse.left) {
+            this.weapon.fire();
+        }
         /*
         let yRot = 0;
 

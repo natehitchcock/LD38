@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import Vox from './o3d/vox';
 
 const charData = require('./content/character/character.toml');
+const testLevel = require('./content/testlevel.toml');
 
 const character = new Vox(charData);
 const scene = new THREE.Scene();
@@ -12,8 +13,8 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHe
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
-const jtree = new JTreeEntity();
-const controls = new ThirdPersonController(camera, character, jtree.jtree);
+
+const controls = new ThirdPersonController(camera, character);
 const clock = new THREE.Clock();
 
 camera.position.z = 5;
@@ -24,14 +25,7 @@ const uniforms = {
 
 const material = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
 
-
-jtree.generateJTree();
-jtree.spawnCubes(pos => {
-    const cube = new THREE.Mesh( geometry, material );
-    cube.position.copy(new THREE.Vector3(pos.x, pos.y, pos.z));
-    scene.add( cube );
-});
-
+scene.add(new Vox(testLevel));
 scene.add(character);
 scene.add(new THREE.DirectionalLight());
 scene.add(new THREE.AmbientLight());

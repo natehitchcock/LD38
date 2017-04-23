@@ -1,0 +1,10 @@
+type = 'Ranged'
+default = 'idle'
+size = 1
+position = [0, -20, 0]
+
+[animation.idle]
+    time = 100000
+    vox = [
+        "testlevel.vox"
+    ]
