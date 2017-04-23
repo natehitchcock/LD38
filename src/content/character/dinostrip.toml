@@ -1,0 +1,10 @@
+default = "idle"
+size = 0.02
+
+[animation.idle]
+    speed = 100
+    vox = [
+        "characters/dinosaur/dino_1.vox",
+        "characters/dinosaur/dino_2.vox",
+    ]
+

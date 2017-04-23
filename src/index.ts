@@ -14,6 +14,8 @@ declare const window: IGameWindow;
 
 const charData = require('./content/character/character.toml');
 const testLevel = require('./content/testlevel.toml');
+const dinoMite = require('./content/character/dinomite.toml');
+const dinostrip = new Vox(require('./content/character/dinostrip.toml'));
 
 const scene = new THREE.Scene();
 
@@ -54,6 +56,19 @@ if(debugControls) {
     scene.add(character);
 }
 
+const makeDinoMite = () => {
+    const o3d = new Vox(dinoMite);
+    o3d.position.set(Math.random() * 2, 0, Math.random() * 2);
+    scene.add(o3d);
+};
+
+let x = 0;
+while(x < 10) {
+    x++;
+    makeDinoMite();
+}
+
+scene.add(dinostrip);
 scene.add(new Vox(testLevel));
 scene.add(jtree);
 scene.add(new THREE.DirectionalLight());
@@ -68,6 +83,13 @@ const sound = new Howl.Howl({
     soundFired = false;
   },
 });
+
+const music = new Howl.Howl({
+  src: ['./sfx/Flaming Atoms.mp3'],
+});
+
+music.loop(true);
+music.play();
 
 const render = () => {
     requestAnimationFrame(render);
