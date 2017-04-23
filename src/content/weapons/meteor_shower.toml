@@ -2,8 +2,8 @@ type = 'Ranged'
 
 #Weapon Details
 [weapon]
-name = 'Tangentializer'
-flavor_text = 'What were we doing?'
+name = 'Meteor'
+flavor_text = 'Probably not a good idea.'
 model = ''
 
 #Technical Specifications
