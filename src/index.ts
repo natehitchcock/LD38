@@ -46,7 +46,7 @@ jtree.position.copy(new THREE.Vector3(-4, 0, -40));
 jtree.generateJTreeSphere(sphereCenter, sphereRadius);
 jtree.spawnCubes();
 
-const debugControls = true;
+const debugControls = false;
 if(debugControls) {
     flyControls = new FlyCharacter(camera);
 }else {
