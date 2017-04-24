@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import Vox from './o3d/vox';
 import {keys, mouse} from './lib/input';
 import * as Howl from 'howler';
+import AI from './o3d/ai';
 
 interface IGameWindow extends Window {
     scene: THREE.Scene;
@@ -53,7 +54,7 @@ controls = new CinematicController(camera);
 
 
 const makeDinoMite = () => {
-    const o3d = new Vox(dinoMite);
+    const o3d = new AI(dinoMite);
     o3d.position.set(Math.random() * 2, 0, Math.random() * 2);
     scene.add(o3d);
 };
