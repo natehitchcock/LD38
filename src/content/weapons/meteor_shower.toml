@@ -1,4 +1,34 @@
 type = 'Ranged'
+default = 'idle'
+size = 0.1
+rotation = [0, 0, 0]
+position = [0, 40, 40]
+
+[animation.idle]
+    time = 100000
+    vox = [
+        "weapons/bolter.vox"
+    ]
+
+[ammo]
+    default = "idle"
+    size = 0.1
+    speed = 5
+    spread = 100
+    ttl = 1000
+    rate = 100
+    rotation = [0, -90, -90]
+    position = [0, 30, -20]
+
+[ammo.animation.idle]
+    speed = 1000
+    vox = [
+        "Weapons/meteor/meteorv3-00.vox",
+        "Weapons/meteor/meteorv3-01.vox",
+        "Weapons/meteor/meteorv3-02.vox",
+        "Weapons/meteor/meteorv3-03.vox",
+        "Weapons/meteor/meteorv3-04.vox",
+    ]
 
 #Weapon Details
 [weapon]

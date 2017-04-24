@@ -7,6 +7,7 @@ import Vox from './o3d/vox';
 import {keys, mouse} from './lib/input';
 import * as Howl from 'howler';
 import AI from './o3d/ai';
+import Weapon from './o3d/weapon';
 
 interface IGameWindow extends Window {
     scene: THREE.Scene;
@@ -17,6 +18,7 @@ declare const window: IGameWindow;
 const charData = require('./content/character/character.toml');
 const testLevel = require('./content/testlevel.toml');
 const dinoMite = require('./content/character/dinomite.toml');
+const weapon = require('./content/weapons/meteor_shower.toml');
 const dinostrip = new Vox(require('./content/character/dinostrip.toml'));
 
 const scene = new THREE.Scene();
@@ -63,6 +65,9 @@ while(x < 10) {
     makeDinoMite();
 }
 
+const meteorShower = new Weapon(weapon);
+
+scene.add(meteorShower);
 scene.add(dinostrip);
 scene.add(new Vox(testLevel));
 scene.add(jtree);
@@ -86,10 +91,17 @@ const music = new Howl.Howl({
 music.loop(true);
 music.play();
 
+let timer = 0;
 const render = () => {
     requestAnimationFrame(render);
     const delta = clock.getDelta();
     controls.tick(delta);
+
+    timer += delta;
+    if(timer > 1) {
+        meteorShower.fire();
+        timer = 0;
+    }
 
     renderer.render(scene, camera);
 };

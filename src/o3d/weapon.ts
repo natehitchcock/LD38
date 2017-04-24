@@ -33,7 +33,7 @@ export default class Weapon extends Vox {
         shell.copy(this.ammo);
         shell.position.copy(this.parent.position);
         shell.rotation.copy(this.parent.rotation);
-        shell.position.y += (Math.random() - 0.5) * this.data.ammo.spread;
+        shell.position.x += (Math.random() - 0.5) * this.data.ammo.spread;
         this.spawned.push(shell);
 
         (window as any).scene.add(shell);
@@ -42,7 +42,7 @@ export default class Weapon extends Vox {
     tick() {
         const delta = this.clock.getDelta();
         this.spawned.forEach(shell => {
-            shell.translateZ(this.data.ammo.speed * delta);
+            shell.translateY(-this.data.ammo.speed * delta);
         });
 
         requestAnimationFrame(this.tick.bind(this));
