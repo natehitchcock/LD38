@@ -6,5 +6,5 @@ position = [0.0, -0.2, 0.0]
 [animation.idle]
     time = 100000
     vox = [
-        "testlevel.vox"
+        "thebonezone.vox"
     ]
