@@ -1,0 +1,18 @@
+default = "idle"
+size = 0.05
+distance = 3
+speed = 0.2
+
+[animation.idle]
+    speed = 100
+    vox = [
+        "characters/b_dinosaur/1.vox",
+        "characters/b_dinosaur/2.vox",
+        "characters/b_dinosaur/3.vox",
+        "characters/b_dinosaur/4.vox",
+        "characters/b_dinosaur/5.vox",
+        "characters/b_dinosaur/6.vox",
+        "characters/b_dinosaur/7.vox",
+        "characters/b_dinosaur/8.vox",
+    ]
+
