@@ -50,6 +50,7 @@ export default class JTreeEntity extends THREE.Object3D {
 
     generateJTree() {
         this.jtree = new JoshuaTree();
+        this.jtree.key = 1;
         this.generateJTree_internal(this.jtree, 0);
     }
     generateJTree_internal(root: JoshuaTree, depth: number) {
@@ -68,6 +69,7 @@ export default class JTreeEntity extends THREE.Object3D {
 
     generateJTreeSphere(center: THREE.Vector3, radius: number) {
         this.jtree = new JoshuaTree();
+        this.jtree.key = 1;
         this.generateJTreeSphere_internal(center, radius, this.jtree, new THREE.Vector3(0, 0, 0), 0);
     }
     pointWithinSphere(center: THREE.Vector3, radius: number, point: THREE.Vector3): boolean {
@@ -109,6 +111,7 @@ export default class JTreeEntity extends THREE.Object3D {
 
         return corners;
     }
+
     generateJTreeSphere_internal(center: THREE.Vector3, radius: number, root: JoshuaTree,
                                  rootPosition: THREE.Vector3, depth: number) {
         const childVoxExtent = this.getScaledExtent(depth + 1);
@@ -212,10 +215,25 @@ export default class JTreeEntity extends THREE.Object3D {
             targetNodeList.map((value: number) => {
                 // heirKey for this node is equal to a target value
                 //  or heir key is for a child of target value
-                shouldTraverseNode = shouldTraverseNode || ((heirKey & value) === value);
+                let foundMatch = true;
+                for(let i = 3; i >= 0; --i) {
+                    const mask = 0x000000ff << (i * 8);
+
+                    if((value & mask) === 0
+                    || (heirKey & mask) === 0) {
+                        break;
+                    }
+
+                    if((value & mask) !== (heirKey & mask)) {
+                        foundMatch = false;
+                        break;
+                    }
+                }
+                shouldTraverseNode = shouldTraverseNode || foundMatch;
             });
 
             if(!shouldTraverseNode) {
+                console.log('bailed');
                 return;
             }
         }
@@ -248,7 +266,8 @@ export default class JTreeEntity extends THREE.Object3D {
                         const keynum = parseInt(childKey, 10);
 
                         this.depthLoop(fn, child, depth + 1,
-                         toff.add(this.indexToScaledRelativePosition(keynum, depth)));
+                         toff.add(this.indexToScaledRelativePosition(keynum, depth)),
+                         targetNodeList);
                     }
                 });
             }
@@ -267,8 +286,8 @@ export default class JTreeEntity extends THREE.Object3D {
         this.mergedGeometry[myMeshIndex].merge(newGeometry, newGeomTransform);
     }
 
-    spawnCubes() {
-        this.depthLoop(this.spawnMergeCubes, this.jtree, 0, new THREE.Vector3(0, 0, 0));
+    spawnCubes(indicesToSpawn?: number[]) {
+        this.depthLoop(this.spawnMergeCubes, this.jtree, 0, new THREE.Vector3(0, 0, 0), indicesToSpawn);
 
         let count = 0;
         this.mergedGeometry.forEach((value: THREE.Geometry, index: number) => {
@@ -276,7 +295,6 @@ export default class JTreeEntity extends THREE.Object3D {
             this.add(this.mergedMeshes[index]);
             ++count;
         });
-        console.log(count);
     }
 
     calculateCenterOfMass(): THREE.Vector3 {
@@ -354,18 +372,34 @@ export default class JTreeEntity extends THREE.Object3D {
         const indicesToRerasterize = [];
 
         this.depthLoop((data: JTreeIterationData)=> {
-            const localCenter = new THREE.Vector3().copy(data.position);
-            const deltaVec = localCenter.sub(center);
 
-            const distance = deltaVec.length();
+            const voxCorner = new THREE.Vector3().copy(data.position).add(
+                this.indexToScaledRelativePosition(data.nodeKey, data.depth));
+            const corners = this.calculateCorners(voxCorner, data.extent);
+            const voxCenter = new THREE.Vector3().copy(voxCorner);
+            voxCenter.add(new THREE.Vector3(data.extent, data.extent, data.extent));
 
-            if(distance <= radius) {
-                const nodeParent = data.nodeParent;
-                nodeParent.Remove(data.nodeKey);
+            let totallyWithinSphere = true;
+            let totallyOutsideSphere = true;
+            corners.forEach((currentValue: THREE.Vector3, index: number, array: THREE.Vector3[]) => {
+                if(this.pointWithinSphere(center, radius, currentValue)) {
+                    totallyOutsideSphere = false;
+                }else {
+                    totallyWithinSphere = false;
+                }
+            });
 
-                const heirInd = this.getHeirarchyIndexByIndexAndParent(data.nodeKey, nodeParent, depthToStoreMeshes);
-                if(!indicesToRerasterize.includes(heirInd)) {
-                    indicesToRerasterize.push(heirInd);
+            if(!totallyOutsideSphere) {
+
+                if(totallyWithinSphere) {
+                    const nodeParent = data.nodeParent;
+                    nodeParent.Remove(data.nodeKey);
+
+                    const heirInd = this.getHeirarchyIndexByIndexAndParent(data.nodeKey, nodeParent,
+                                                                           depthToStoreMeshes);
+                    if(!indicesToRerasterize.includes(heirInd)) {
+                        indicesToRerasterize.push(heirInd);
+                    }
                 }
             }
 
@@ -374,10 +408,13 @@ export default class JTreeEntity extends THREE.Object3D {
         console.log(indicesToRerasterize);
 
         // Clean out the merged mesh
-        //this.remove(this.mergedMesh);
-        //delete this.mergedMesh;
+        indicesToRerasterize.forEach(element => {
+            console.log(element);
+            this.remove(this.mergedMeshes[element]);
+            delete this.mergedMeshes[element];
+            delete this.mergedGeometry[element];
+        });
 
-        // [SLOW] Repopulate the jtree from scratch
-        //this.spawnCubes();
+        this.spawnCubes();
     }
 }

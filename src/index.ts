@@ -50,7 +50,8 @@ const jtree = new JTreeEntity(material);
 
 jtree.position.copy(new THREE.Vector3(0, 0, -64));
 console.log('generating sphere jtree...');
-jtree.generateJTreeSphere(sphereCenter, sphereRadius);
+//jtree.generateJTreeSphere(sphereCenter, sphereRadius);
+jtree.generateJTree();
 console.log('spawning voxels...');
 jtree.spawnCubes();
 
@@ -58,11 +59,17 @@ scene.add(jtree);
 scene.add(new THREE.DirectionalLight());
 scene.add(new THREE.AmbientLight());
 
+let exploded = false;
 const render = () => {
     requestAnimationFrame(render);
     const delta = clock.getDelta();
 
     controls.update(delta);
+
+    if(keys.x && !exploded) {
+        exploded = true;
+        jtree.detachSubtreeSphere(new THREE.Vector3(0, 0, 0), 40);
+    }
 
     renderer.render(scene, camera);
 };
