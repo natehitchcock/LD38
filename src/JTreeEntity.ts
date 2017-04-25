@@ -6,10 +6,10 @@ const zeroNum: Uint64 = new Uint64([0, 0]);
 const highBit: number = 0x800000;
 
 // Max depth at which there are workable tree nodes
-const maxDepth = 1;
+const maxDepth = 2;
 
 // Which level of node to store combined meshes at
-const depthToStoreMeshes = 1;
+const depthToStoreMeshes = 2;
 
 // [TODO] refactor jtree to use RTT to detect leaf nodes instead of max depth
 // [TODO] add defines for common 64 bit ints to Uint64
@@ -270,10 +270,13 @@ export default class JTreeEntity extends THREE.Object3D {
     spawnCubes() {
         this.depthLoop(this.spawnMergeCubes, this.jtree, 0, new THREE.Vector3(0, 0, 0));
 
+        let count = 0;
         this.mergedGeometry.forEach((value: THREE.Geometry, index: number) => {
             this.mergedMeshes[index] = new THREE.Mesh(value, this.material);
             this.add(this.mergedMeshes[index]);
+            ++count;
         });
+        console.log(count);
     }
 
     calculateCenterOfMass(): THREE.Vector3 {
@@ -300,13 +303,22 @@ export default class JTreeEntity extends THREE.Object3D {
     }
 
     getHeirarchyIndexByIndexAndParent(index: number, parentNode: JoshuaTree, maxdepth: number = 4) {
-        let key = index << 3;
-        const node = parentNode;
-        for(let i = 1; i < maxDepth && node && node.parent; ++i) {
-            const shifted = node.key << 3;
-            key = key >> 1;
-            key &= shifted;
+        let key = index << 24;
+        let node = parentNode;
+        let depth = 0;
+        while(node) {
+            const shifted = node.key << 24;
+            key = key >> 8;
+            key |= shifted;
+            ++depth;
+            node = node.parent;
         }
+
+        const shiftFix = 32 - (maxdepth * 8);
+        if(shiftFix <= 0 || depth <= maxdepth) return key;
+
+        key >>= shiftFix;
+        key <<= shiftFix;
 
         return key;
     }
@@ -314,11 +326,20 @@ export default class JTreeEntity extends THREE.Object3D {
     // [WARN] will have trouble with depths > 4
     getHeirarchyIndexByNode(node: JoshuaTree, maxdepth: number = 4) {
         let key = 0;
-        for(let i = 0; i < maxDepth && node && node.parent; ++i) {
-            const shifted = node.key << 3;
-            key = key >> 1;
-            key &= shifted;
+        let depth = -1;
+        while(node) {
+            const shifted = node.key << 24;
+            key = key >> 8;
+            key |= shifted;
+            ++depth;
+            node = node.parent;
         }
+
+        const shiftFix = 32 - (maxdepth*8);
+        if(shiftFix <= 0 || depth <= maxdepth) return key;
+
+        key >>= shiftFix;
+        key <<= shiftFix;
 
         return key;
     }
