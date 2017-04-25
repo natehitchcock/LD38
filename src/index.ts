@@ -30,11 +30,13 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-let controls: CinematicController;
+let controls: FlyCharacter;
 const clock = new THREE.Clock();
 
 camera.position.z = 10;
 camera.position.y = 2;
+
+controls =  new FlyCharacter(camera);
 
 const uniforms = {
     color: {value: new THREE.Vector4(0, 1, 0, 1)},
@@ -46,62 +48,19 @@ const sphereCenter = new THREE.Vector3(5, 5, 5);
 const sphereRadius = 4;
 const jtree = new JTreeEntity(material);
 
-jtree.position.copy(new THREE.Vector3(-4, 10, -40));
+jtree.position.copy(new THREE.Vector3(0, 0, 0));
 jtree.generateJTreeSphere(sphereCenter, sphereRadius);
 jtree.spawnCubes();
 
-const character = new Vox(charData);
-controls = new CinematicController(camera);
-
-const makeDinoMite = () => {
-    const o3d = new AI(dinoMite);
-    o3d.position.set(Math.random() * 2, 0, Math.random() * 2);
-    scene.add(o3d);
-};
-
-let x = 0;
-while(x < 10) {
-    x++;
-    makeDinoMite();
-}
-
-const meteorShower = new Weapon(weapon);
-
-scene.add(meteorShower);
-scene.add(dinostrip);
-scene.add(new Vox(testLevel));
 scene.add(jtree);
 scene.add(new THREE.DirectionalLight());
 scene.add(new THREE.AmbientLight());
 
-const direction = 1;
-
-let soundFired = false;
-const sound = new Howl.Howl({
-  src: ['./sfx/sacktap.wav'],
-  onend: () => {
-    soundFired = false;
-  },
-});
-
-const music = new Howl.Howl({
-  src: ['./sfx/Flaming Atoms.mp3'],
-});
-
-music.loop(true);
-music.play();
-
-let timer = 0;
 const render = () => {
     requestAnimationFrame(render);
     const delta = clock.getDelta();
-    controls.tick(delta);
 
-    timer += delta;
-    if(timer > 1) {
-        meteorShower.fire();
-        timer = 0;
-    }
+    controls.update(delta);
 
     renderer.render(scene, camera);
 };
