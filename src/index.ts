@@ -42,14 +42,16 @@ const uniforms = {
     color: {value: new THREE.Vector4(0, 1, 0, 1)},
 };
 
-const material = new THREE.MeshPhongMaterial( {color: 0xFFFF00} );
+const material = new THREE.MeshPhongMaterial( {color: 0xf4a460} );
 
-const sphereCenter = new THREE.Vector3(5, 5, 5);
-const sphereRadius = 4;
+const sphereCenter = new THREE.Vector3(0, 0, 0);
+const sphereRadius = 20;
 const jtree = new JTreeEntity(material);
 
-jtree.position.copy(new THREE.Vector3(0, 0, 0));
+jtree.position.copy(new THREE.Vector3(0, 0, -64));
+console.log('generating sphere jtree...');
 jtree.generateJTreeSphere(sphereCenter, sphereRadius);
+console.log('spawning voxels...');
 jtree.spawnCubes();
 
 scene.add(jtree);
